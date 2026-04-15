@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Order | UGC AI Video</title>
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
+
+        :root {
+            --ink: #1f2233;
+            --muted: #666078;
+            --accent: #ff6b2c;
+            --accent-deep: #e84d0e;
+            --panel: rgba(255, 255, 255, 0.82);
+            --line: rgba(31, 34, 51, 0.12);
+            --shadow: 0 20px 48px rgba(42, 28, 12, 0.1);
+            --shadow-xl: 0 28px 80px rgba(41, 30, 17, 0.16);
+            --success-bg: #dcfce7;
+            --success-text: #15803d;
+            --pending-bg: #fff7ed;
+            --pending-text: #c2410c;
+        }
+
+        * { font-family: 'Manrope', sans-serif; }
+
+        body {
+            background:
+                radial-gradient(circle at top left, rgba(255, 182, 120, 0.3), transparent 28%),
+                radial-gradient(circle at top right, rgba(32, 123, 183, 0.12), transparent 25%),
+                linear-gradient(180deg, #fffaf4 0%, #f7efe4 42%, #fffdfa 100%);
+            color: var(--ink);
+        }
+
+        h1, h2, h3, .brand-mark, .eyebrow, .stat-card strong, .step-number {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 18px 0;
+            backdrop-filter: blur(16px);
+            background: rgba(255, 250, 244, 0.76);
+            border-bottom: 1px solid rgba(31, 34, 51, 0.08);
+        }
+
+        .nav-shell {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 14px 20px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.58);
+            border: 1px solid rgba(255, 255, 255, 0.72);
+            box-shadow: 0 16px 36px rgba(53, 40, 24, 0.08);
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .brand-icon {
+            width: 44px;
+            height: 44px;
+            display: grid;
+            place-items: center;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #ff7b38, #ff4d00);
+            color: white;
+            overflow: hidden;
+            box-shadow: 0 14px 28px rgba(232, 77, 14, 0.28);
+        }
+        .brand-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .brand-copy small {
+            display: block;
+            font-size: 0.75rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .brand-mark {
+            font-size: 1.12rem;
+            letter-spacing: -0.04em;
+        }
+
+        .site-nav {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .site-nav a {
+            text-decoration: none;
+            color: var(--muted);
+            font-weight: 700;
+        }
+
+        .site-nav a.active,
+        .site-nav a:hover {
+            color: var(--ink);
+        }
+
+        .header-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 18px;
+            border-radius: 999px;
+            background: var(--ink);
+            color: #fff;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .header-cta-secondary {
+            background: rgba(31, 34, 51, 0.08);
+            color: var(--ink);
+            border: 1px solid rgba(31, 34, 51, 0.1);
+        }
+
+        .track-page {
+            padding: 44px 0 72px;
+        }
+
+        .track-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 0.95fr) minmax(340px, 1.05fr);
+            gap: 22px;
+            align-items: start;
+        }
+
+        .hero-card,
+        .tracker-card,
+        .info-card,
+        .stat-card {
+            background: var(--panel);
+            border: 1px solid rgba(255, 255, 255, 0.84);
+            border-radius: 28px;
+            box-shadow: var(--shadow);
+        }
+
+        .hero-card,
+        .tracker-card {
+            padding: 30px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            margin-bottom: 18px;
+            border-radius: 999px;
+            background: rgba(255, 107, 44, 0.1);
+            color: var(--accent-deep);
+            font-size: 0.82rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .hero-card h1 {
+            font-size: clamp(2.4rem, 5vw, 4rem);
+            line-height: 0.98;
+            letter-spacing: -0.06em;
+            margin-bottom: 14px;
+            max-width: 10ch;
+        }
+
+        .hero-card p,
+        .info-card p,
+        .step p,
+        .search-help {
+            color: var(--muted);
+            line-height: 1.75;
+        }
+
+        .stat-row {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 22px;
+        }
+
+        .stat-card {
+            padding: 18px;
+        }
+
+        .stat-card strong {
+            display: block;
+            font-size: 1.35rem;
+            letter-spacing: -0.05em;
+            margin-bottom: 4px;
+        }
+
+        .stat-card span {
+            color: var(--muted);
+            font-size: 0.82rem;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 12px;
+            margin: 18px 0 10px;
+        }
+
+        .search-box .form-control {
+            flex: 1;
+            padding: 15px 16px;
+            border-radius: 18px;
+            border: 1px solid rgba(31, 34, 51, 0.12);
+            background: rgba(255, 255, 255, 0.92);
+            font-size: 0.96rem;
+        }
+
+        .search-box .btn {
+            padding: 15px 22px;
+            border-radius: 18px;
+            justify-content: center;
+            background: linear-gradient(135deg, #ff7b38, #ff4d00);
+            box-shadow: 0 20px 36px rgba(232, 77, 14, 0.24);
+        }
+
+        .tracker-card {
+            box-shadow: var(--shadow-xl);
+        }
+
+        .tracker-card h2 {
+            font-size: 1.65rem;
+            letter-spacing: -0.05em;
+            margin-bottom: 8px;
+        }
+
+        .status-tracker {
+            display: none;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(31, 34, 51, 0.08);
+        }
+
+        .result-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 26px;
+        }
+
+        .result-head h3 {
+            font-size: 1.2rem;
+            margin-bottom: 4px;
+        }
+
+        .result-head p {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .badge {
+            padding: 9px 12px;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            background: rgba(31, 34, 51, 0.06);
+        }
+
+        .step-list {
+            display: grid;
+            gap: 16px;
+        }
+
+        .step {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 14px;
+            align-items: start;
+            padding: 16px 18px;
+            border-radius: 22px;
+            border: 1px solid rgba(31, 34, 51, 0.08);
+            background: rgba(255, 255, 255, 0.7);
+            opacity: 0.42;
+            transition: opacity 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+        }
+
+        .step.active {
+            opacity: 1;
+            transform: translateY(-2px);
+            border-color: rgba(255, 107, 44, 0.28);
+            background: linear-gradient(180deg, rgba(255, 245, 238, 0.95), rgba(255, 255, 255, 0.88));
+        }
+
+        .step-number {
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            border-radius: 14px;
+            background: rgba(31, 34, 51, 0.08);
+            color: var(--ink);
+            font-size: 1rem;
+        }
+
+        .step.active .step-number {
+            background: linear-gradient(135deg, #ff7b38, #ff4d00);
+            color: white;
+        }
+
+        .step h4 {
+            font-size: 1rem;
+            margin-bottom: 6px;
+        }
+
+        .info-stack {
+            display: grid;
+            gap: 18px;
+        }
+
+        .info-card {
+            padding: 24px;
+        }
+
+        .info-card h3 {
+            font-size: 1.15rem;
+            letter-spacing: -0.04em;
+            margin-bottom: 10px;
+        }
+
+        .info-list {
+            padding-left: 18px;
+            display: grid;
+            gap: 10px;
+            color: var(--muted);
+        }
+
+        .footer {
+            padding: 30px 0 42px;
+        }
+
+        .footer-shell {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            padding-top: 22px;
+            border-top: 1px solid rgba(31, 34, 51, 0.12);
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
+
+        .footer-copy {
+            display: grid;
+            gap: 8px;
+            max-width: 760px;
+        }
+
+        .footer-copy p {
+            margin: 0;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: inherit;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        @media (max-width: 1080px) {
+            .track-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .nav-shell {
+                border-radius: 28px;
+                padding: 18px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .brand,
+            .site-nav,
+            .header-actions {
+                width: 100%;
+            }
+
+            .site-nav {
+                justify-content: center;
+            }
+
+            .header-actions {
+                display: flex;
+                justify-content: stretch;
+            }
+
+            .header-cta {
+                flex: 1 1 0;
+                justify-content: center;
+            }
+
+            .stat-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .nav-shell,
+            .site-nav,
+            .search-box,
+            .result-head {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .brand,
+            .site-nav,
+            .search-box .btn,
+            .header-actions,
+            .header-cta {
+                width: 100%;
+            }
+
+            .site-nav {
+                gap: 16px;
+            }
+
+            .header-actions {
+                flex-direction: column;
+            }
+
+            .hero-card,
+            .tracker-card,
+            .info-card {
+                padding: 22px;
+            }
+
+            .hero-card h1 {
+                max-width: none;
+            }
+
+            .footer-shell,
+            .footer-links {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="nav-shell">
+                <a href="index.html" class="brand">
+                    <span class="brand-icon"><img src="assets/logo.png" alt="UGC AI Video logo"></span>
+                    <span class="brand-copy">
+                        <small>A Digi Xeno Service</small>
+                        <span class="brand-mark">UGC AI Video</span>
+                    </span>
+                </a>
+
+                <nav class="site-nav">
+                    <a href="index.html">Home</a>
+                    <a href="order.html">Place Order</a>
+                    <a href="track.html" class="active">Track Order</a>
+                    <a href="admin.html">Staff</a>
+                </nav>
+
+                <div class="header-actions">
+                    <a href="order.html" class="header-cta header-cta-secondary">Video Order <i class="fas fa-video"></i></a>
+                    <a href="https://wa.me/919530309365" class="header-cta">WhatsApp Support <i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="track-page">
+        <div class="container">
+            <section class="track-layout">
+                <div class="info-stack">
+                    <div class="hero-card">
+                        <div class="eyebrow"><i class="fas fa-satellite-dish"></i> Real-time order visibility</div>
+                        <h1>Apna project status premium dashboard style me dekho.</h1>
+                        <p>Order ID enter karo aur turant dekh lo ki project receive hua hai, editing me hai, ya delivery-ready stage par pahunch chuka hai.</p>
+                        <div class="stat-row">
+                            <div class="stat-card">
+                                <strong>1 ID</strong>
+                                <span>se full project visibility</span>
+                            </div>
+                            <div class="stat-card">
+                                <strong>Live Flow</strong>
+                                <span>New order se completion tak</span>
+                            </div>
+                            <div class="stat-card">
+                                <strong>Payment View</strong>
+                                <span>verification badge included</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Tracking tips</h3>
+                        <ul class="info-list">
+                            <li>Order ID exactly waise hi enter karo jaise submit ke baad mila tha.</li>
+                            <li>URL me `?id=` ho to page automatic tracking attempt karega.</li>
+                            <li>Payment pending ho to verification ke baad badge update hoga.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="tracker-card">
+                    <h2>Track Your Order</h2>
+                    <p class="search-help">Order ID dalo aur current status instantly fetch karo.</p>
+
+                    <div class="search-box">
+                        <input type="text" id="trackId" class="form-control" placeholder="Enter Order ID (e.g. AV-1001)">
+                        <button onclick="trackOrder()" class="btn btn-primary">Track Now</button>
+                    </div>
+
+                    <div id="trackerBox" class="status-tracker">
+                        <div class="result-head">
+                            <div>
+                                <h3 id="resName">-</h3>
+                                <p id="resId">-</p>
+                            </div>
+                            <div id="resPay" class="badge">Payment Pending</div>
+                        </div>
+
+                        <div class="step-list" id="steps">
+                            <div class="step" data-status="New Order">
+                                <div class="step-number">01</div>
+                                <div>
+                                    <h4>Order Received</h4>
+                                    <p>Humne aapka brief aur uploaded assets receive kar liye hain.</p>
+                                </div>
+                            </div>
+
+                            <div class="step" data-status="Editing">
+                                <div class="step-number">02</div>
+                                <div>
+                                    <h4>Editing in Progress</h4>
+                                    <p>Creative build, visual polish, pacing aur ad structure par kaam chal raha hai.</p>
+                                </div>
+                            </div>
+
+                            <div class="step" data-status="Completed">
+                                <div class="step-number">03</div>
+                                <div>
+                                    <h4>Completed</h4>
+                                    <p>Project final stage par hai aur delivery ke liye ready ho chuka hai.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-shell">
+                <div class="footer-copy">
+                    <p>A Digi Xeno Service. UGC AI Video is powered by Digi Xeno to help coaching centers, schools, and businesses create high-converting promotional videos.</p>
+                    <p>&copy; 2026 Digi Xeno | UGC AI Video Service | WhatsApp: <a href="https://wa.me/919530309365">+91 95303 09365</a></p>
+                </div>
+                <div class="footer-links">
+                    <a href="company.html#privacy-policy">Privacy Policy</a>
+                    <a href="company.html#terms-and-conditions">Terms & Conditions</a>
+                    <a href="company.html#refund-policy">Refund Policy</a>
+                    <a href="company.html#disclaimer">Disclaimer</a>
+                    <a href="company.html#support">Support</a>
+                    <a href="company.html#contact-us">Contact Us</a>
+                    <a href="https://digixeno.in">Visit Main Website</a>
+                    <a href="https://instagram.com/digixeno">Instagram: @digixeno</a>
+                    <a href="https://wa.me/919530309365">WhatsApp Support</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+
+        async function trackOrder() {
+            const id = document.getElementById('trackId').value.trim();
+            if (!id) return;
+
+            try {
+                const res = await fetch(`${API_URL}/orders/track/${id}`);
+                const data = await res.json();
+
+                if (data.success) {
+                    showTrack(data.order);
+                } else {
+                    alert('Order not found');
+                }
+            } catch (err) {
+                alert('Failed to connect');
+            }
+        }
+
+        function showTrack(order) {
+            document.getElementById('trackerBox').style.display = 'block';
+            document.getElementById('resName').innerText = order.clientName;
+            document.getElementById('resId').innerText = order.orderId;
+
+            const pay = document.getElementById('resPay');
+            if (order.paymentStatus === 'verified') {
+                pay.innerText = 'Payment Verified';
+                pay.style.background = 'var(--success-bg)';
+                pay.style.color = 'var(--success-text)';
+            } else {
+                pay.innerText = 'Payment Pending';
+                pay.style.background = 'var(--pending-bg)';
+                pay.style.color = 'var(--pending-text)';
+            }
+
+            const steps = document.querySelectorAll('.step');
+            const statusOrder = ['New Order', 'Editing', 'Completed'];
+            const currentIndex = statusOrder.indexOf(order.status);
+
+            steps.forEach((step, idx) => {
+                if (idx <= currentIndex) {
+                    step.classList.add('active');
+                } else {
+                    step.classList.remove('active');
+                }
+            });
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('id')) {
+            document.getElementById('trackId').value = urlParams.get('id');
+            trackOrder();
+        }
+    </script>
+</body>
+</html>

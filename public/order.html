@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Place Order | UGC AI Video</title>
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
+
+        :root {
+            --ink: #1f2233;
+            --muted: #666078;
+            --accent: #ff6b2c;
+            --accent-deep: #e84d0e;
+            --panel: rgba(255, 255, 255, 0.82);
+            --line: rgba(31, 34, 51, 0.12);
+            --shadow: 0 20px 48px rgba(42, 28, 12, 0.1);
+            --shadow-xl: 0 28px 80px rgba(41, 30, 17, 0.16);
+        }
+
+        * {
+            font-family: 'Manrope', sans-serif;
+        }
+
+        body {
+            background:
+                radial-gradient(circle at top left, rgba(255, 182, 120, 0.3), transparent 28%),
+                radial-gradient(circle at top right, rgba(32, 123, 183, 0.12), transparent 25%),
+                linear-gradient(180deg, #fffaf4 0%, #f7efe4 42%, #fffdfa 100%);
+            color: var(--ink);
+        }
+
+        h1,
+        h2,
+        h3,
+        .brand-mark,
+        .eyebrow,
+        .mini-card strong {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 18px 0;
+            backdrop-filter: blur(16px);
+            background: rgba(255, 250, 244, 0.76);
+            border-bottom: 1px solid rgba(31, 34, 51, 0.08);
+        }
+
+        .nav-shell {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 14px 20px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.58);
+            border: 1px solid rgba(255, 255, 255, 0.72);
+            box-shadow: 0 16px 36px rgba(53, 40, 24, 0.08);
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .brand-icon {
+            width: 44px;
+            height: 44px;
+            display: grid;
+            place-items: center;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #ff7b38, #ff4d00);
+            color: white;
+            overflow: hidden;
+            box-shadow: 0 14px 28px rgba(232, 77, 14, 0.28);
+        }
+
+        .brand-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .brand-copy small {
+            display: block;
+            font-size: 0.75rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .brand-mark {
+            font-size: 1.12rem;
+            letter-spacing: -0.04em;
+        }
+
+        .site-nav {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .site-nav a {
+            text-decoration: none;
+            color: var(--muted);
+            font-weight: 700;
+        }
+
+        .site-nav a.active,
+        .site-nav a:hover {
+            color: var(--ink);
+        }
+
+        .header-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 18px;
+            border-radius: 999px;
+            background: var(--ink);
+            color: #fff;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .header-cta-secondary {
+            background: rgba(31, 34, 51, 0.08);
+            color: var(--ink);
+            border: 1px solid rgba(31, 34, 51, 0.1);
+        }
+
+        .order-page {
+            padding: 44px 0 72px;
+        }
+
+        .hero-band {
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+            gap: 22px;
+            align-items: stretch;
+            margin-bottom: 22px;
+        }
+
+        .hero-copy,
+        .mini-card,
+        .form-card,
+        .sidebar-card,
+        .qr-box {
+            background: var(--panel);
+            border: 1px solid rgba(255, 255, 255, 0.84);
+            border-radius: 28px;
+            box-shadow: var(--shadow);
+        }
+
+        .hero-copy {
+            padding: 30px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            margin-bottom: 18px;
+            border-radius: 999px;
+            background: rgba(255, 107, 44, 0.1);
+            color: var(--accent-deep);
+            font-size: 0.82rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .hero-copy h1 {
+            font-size: clamp(2.4rem, 5vw, 4.1rem);
+            line-height: 0.98;
+            letter-spacing: -0.06em;
+            margin-bottom: 14px;
+            max-width: 11ch;
+        }
+
+        .hero-copy p,
+        .sidebar-card p,
+        .mini-card p,
+        .tip-list li {
+            color: var(--muted);
+            line-height: 1.75;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 22px;
+        }
+
+        .mini-card {
+            padding: 18px;
+        }
+
+        .mini-card strong {
+            display: block;
+            font-size: 1.4rem;
+            letter-spacing: -0.05em;
+            margin-bottom: 4px;
+        }
+
+        .mini-card span {
+            color: var(--muted);
+            font-size: 0.82rem;
+        }
+
+        .order-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.15fr) 340px;
+            gap: 22px;
+            align-items: start;
+        }
+
+        .form-card {
+            padding: 30px;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .form-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .form-head h2 {
+            font-size: 1.7rem;
+            letter-spacing: -0.05em;
+            margin-bottom: 6px;
+        }
+
+        .status-pill {
+            padding: 9px 12px;
+            border-radius: 999px;
+            background: rgba(31, 34, 51, 0.06);
+            font-size: 0.8rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 0;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.88rem;
+            font-weight: 800;
+            color: var(--ink);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 15px;
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid rgba(31, 34, 51, 0.12);
+            border-radius: 16px;
+            color: var(--ink);
+            font-size: 0.96rem;
+        }
+
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .helper-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .helper-tag {
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(255, 107, 44, 0.1);
+            color: var(--accent-deep);
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .qr-box {
+            margin-top: 22px;
+            padding: 22px;
+            background: linear-gradient(180deg, rgba(255, 245, 238, 0.96), rgba(255, 255, 255, 0.92));
+        }
+
+        .qr-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .qr-head h3 {
+            font-size: 1.1rem;
+            letter-spacing: -0.04em;
+        }
+
+        .qr-note {
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(255, 107, 44, 0.12);
+            color: var(--accent-deep);
+            font-size: 0.78rem;
+            font-weight: 800;
+        }
+
+        .qr-grid {
+            display: grid;
+            grid-template-columns: 160px 1fr;
+            gap: 18px;
+            align-items: center;
+        }
+
+        .qr-image {
+            width: 100%;
+            max-width: 260px;
+            height: auto;
+            border-radius: 20px;
+            border: 1px solid rgba(31, 34, 51, 0.08);
+            background: white;
+            object-fit: contain;
+        }
+
+        .submit-btn {
+            width: 100%;
+            justify-content: center;
+            margin-top: 24px;
+            padding: 16px 22px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #ff7b38, #ff4d00);
+            box-shadow: 0 20px 36px rgba(232, 77, 14, 0.24);
+        }
+
+        .sidebar-stack {
+            display: grid;
+            gap: 18px;
+        }
+
+        .hero-band>.sidebar-stack {
+            height: 100%;
+        }
+
+        .sidebar-card {
+            padding: 24px;
+        }
+
+        .sidebar-card h3 {
+            font-size: 1.15rem;
+            letter-spacing: -0.04em;
+            margin-bottom: 10px;
+        }
+
+        .sidebar-card h4 {
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+
+        .tip-list {
+            padding-left: 18px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .checkpoint {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .checkpoint i {
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            background: rgba(255, 107, 44, 0.12);
+            color: var(--accent-deep);
+            flex: 0 0 auto;
+        }
+
+        .checkpoint strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        @media (max-width: 1080px) {
+
+            .hero-band,
+            .order-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .nav-shell {
+                border-radius: 28px;
+                padding: 18px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .brand,
+            .site-nav,
+            .header-actions {
+                width: 100%;
+            }
+
+            .site-nav {
+                justify-content: center;
+            }
+
+            .header-actions {
+                display: flex;
+                justify-content: stretch;
+            }
+
+            .header-cta {
+                flex: 1 1 0;
+                justify-content: center;
+            }
+
+            .hero-stats,
+            .form-grid,
+            .qr-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .container {
+                padding: 0 16px;
+            }
+
+            .nav-shell,
+            .site-nav,
+            .form-head,
+            .qr-head {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .brand,
+            .site-nav,
+            .header-actions,
+            .header-cta {
+                width: 100%;
+            }
+
+            .site-nav {
+                gap: 16px;
+            }
+
+            .header-actions {
+                flex-direction: column;
+            }
+
+            .hero-copy,
+            .form-card,
+            .sidebar-card,
+            .qr-box {
+                padding: 22px;
+            }
+
+            .hero-copy h1 {
+                max-width: none;
+            }
+        }
+
+        .hero-copy.hero-panel {
+            position: relative;
+            overflow: hidden;
+            padding: 34px;
+            background:
+                radial-gradient(circle at top right, rgba(255, 145, 96, 0.24), transparent 34%),
+                linear-gradient(145deg, #1f2233 0%, #252d48 56%, #20263d 100%);
+            color: #fff;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .hero-copy.hero-panel::after {
+            content: "";
+            position: absolute;
+            right: -72px;
+            bottom: -72px;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .hero-copy.hero-panel .eyebrow {
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffd3be;
+        }
+
+        .hero-copy.hero-panel h1 {
+            max-width: 9ch;
+            margin-bottom: 16px;
+            font-size: clamp(2.7rem, 5vw, 4.5rem);
+            line-height: 0.98;
+        }
+
+        .hero-copy.hero-panel>p {
+            max-width: 620px;
+            color: rgba(255, 255, 255, 0.78);
+            font-size: 1.02rem;
+        }
+
+        .signal-row,
+        .promise-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .signal-row {
+            margin-bottom: 22px;
+        }
+
+        .signal-pill,
+        .promise-pill,
+        .section-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: 999px;
+            font-weight: 700;
+        }
+
+        .signal-pill {
+            padding: 9px 13px;
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+            font-size: 0.82rem;
+        }
+
+        .hero-copy.hero-panel .hero-stats {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-copy.hero-panel .mini-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.08);
+            box-shadow: none;
+        }
+
+        .hero-copy.hero-panel .mini-card strong,
+        .hero-copy.hero-panel .mini-card span {
+            color: #fff;
+        }
+
+        .hero-copy.hero-panel .mini-card span {
+            color: rgba(255, 255, 255, 0.72);
+        }
+
+        .sidebar-card.highlight-card {
+            padding: 28px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 246, 238, 0.95));
+            border-color: rgba(255, 255, 255, 0.92);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            color: var(--accent-deep);
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .highlight-card .slot-pill {
+            margin-left: auto;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(31, 34, 51, 0.06);
+            color: var(--ink);
+            font-size: 0.78rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .preview-stack {
+            display: grid;
+            gap: 14px;
+            margin-top: 18px;
+            flex: 1;
+            align-content: start;
+        }
+
+        .preview-item {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 14px;
+            padding: 16px 18px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.78);
+            border: 1px solid rgba(31, 34, 51, 0.08);
+        }
+
+        .preview-item i {
+            width: 40px;
+            height: 40px;
+            display: grid;
+            place-items: center;
+            border-radius: 14px;
+            background: rgba(255, 107, 44, 0.12);
+            color: var(--accent-deep);
+        }
+
+        .preview-item strong {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 1rem;
+        }
+
+        .preview-item span {
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .form-card {
+            padding: 32px;
+        }
+
+        .section-chip {
+            padding: 9px 13px;
+            margin-bottom: 12px;
+            background: rgba(255, 107, 44, 0.12);
+            color: var(--accent-deep);
+            font-size: 0.8rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .status-stack {
+            display: grid;
+            gap: 8px;
+            justify-items: end;
+            text-align: right;
+        }
+
+        .status-stack small {
+            color: var(--muted);
+            font-size: 0.84rem;
+            line-height: 1.5;
+        }
+
+        #orderForm {
+            display: grid;
+            gap: 20px;
+        }
+
+        .form-grid {
+            padding: 24px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(31, 34, 51, 0.08);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: rgba(255, 107, 44, 0.56);
+            box-shadow: 0 0 0 4px rgba(255, 107, 44, 0.12);
+        }
+
+        .helper-copy {
+            margin-top: 12px;
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.65;
+        }
+
+        .promise-row {
+            margin-top: 14px;
+        }
+
+        .promise-pill {
+            padding: 8px 12px;
+            background: rgba(31, 34, 51, 0.06);
+            color: var(--ink);
+            font-size: 0.8rem;
+        }
+
+        .qr-box {
+            padding: 24px;
+        }
+
+        .qr-image-wrap {
+            padding: 12px;
+            border-radius: 22px;
+            background: #fff;
+            border: 1px solid rgba(31, 34, 51, 0.08);
+            width: fit-content;
+        }
+
+        .submit-card {
+            padding: 18px 20px;
+            border-radius: 22px;
+            background: rgba(31, 34, 51, 0.04);
+            border: 1px solid rgba(31, 34, 51, 0.08);
+        }
+
+        .submit-card strong {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 1rem;
+        }
+
+        .submit-card p {
+            color: var(--muted);
+            line-height: 1.7;
+            font-size: 0.92rem;
+        }
+
+        .sidebar-card.dark-panel {
+            background: linear-gradient(150deg, rgba(31, 34, 51, 0.96), rgba(42, 49, 73, 0.96));
+            color: #fff;
+        }
+
+        .sidebar-card.dark-panel h3,
+        .sidebar-card.dark-panel h4,
+        .sidebar-card.dark-panel strong {
+            color: #fff;
+        }
+
+        .sidebar-card.dark-panel p,
+        .sidebar-card.dark-panel li {
+            color: rgba(255, 255, 255, 0.78);
+        }
+
+        .sidebar-card.dark-panel .checkpoint i {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+        }
+
+        .timeline {
+            display: grid;
+            gap: 14px;
+        }
+
+        .timeline-step {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 14px;
+            align-items: start;
+        }
+
+        .timeline-step b {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .timeline-step span {
+            color: var(--muted);
+            line-height: 1.65;
+            font-size: 0.9rem;
+        }
+
+        .timeline-no {
+            width: 40px;
+            height: 40px;
+            display: grid;
+            place-items: center;
+            border-radius: 14px;
+            background: rgba(255, 107, 44, 0.12);
+            color: var(--accent-deep);
+            font-weight: 800;
+        }
+
+        .footer {
+            padding: 30px 0 42px;
+        }
+
+        .footer-shell {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            padding-top: 22px;
+            border-top: 1px solid rgba(31, 34, 51, 0.12);
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
+
+        .footer-copy {
+            display: grid;
+            gap: 8px;
+            max-width: 760px;
+        }
+
+        .footer-copy p {
+            margin: 0;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: inherit;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        @media (max-width: 1080px) {
+            .status-stack {
+                justify-items: start;
+                text-align: left;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .form-grid {
+                padding: 20px;
+            }
+
+            .preview-stack {
+                gap: 12px;
+            }
+        }
+
+        @media (max-width: 560px) {
+
+            .status-stack,
+            .footer-shell {
+                justify-items: start;
+                text-align: left;
+            }
+
+            .signal-row,
+            .promise-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .highlight-card .slot-pill {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="nav-shell">
+                <a href="index.html" class="brand">
+                    <span class="brand-icon"><img src="assets/logo.png" alt="UGC AI Video logo"></span>
+                    <span class="brand-copy">
+                        <small>A Digi Xeno Service</small>
+                        <span class="brand-mark">UGC AI Video</span>
+                    </span>
+                </a>
+
+                <nav class="site-nav">
+                    <a href="index.html">Home</a>
+                    <a href="order.html" class="active">Place Order</a>
+                    <a href="track.html">Track Order</a>
+                    <a href="admin.html">Staff</a>
+                </nav>
+
+                <div class="header-actions">
+                    <a href="order.html" class="header-cta header-cta-secondary">Video Order <i
+                            class="fas fa-video"></i></a>
+                    <a href="https://wa.me/919530309365" class="header-cta">WhatsApp Support <i
+                            class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="order-page">
+        <div class="container">
+            <section class="hero-band">
+                <div class="hero-copy hero-panel">
+                    <div class="eyebrow"><i class="fas fa-wand-magic-sparkles"></i> Premium intake experience</div>
+                    <h1>Brief bhejo. Hum usse polished ad-ready creative me shape kar denge.</h1>
+                    <p>Page ko intentionally clean aur confidence-building rakha gaya hai taaki client ko lage ki
+                        workflow organized hai, payment clear hai, aur output random freelancer handoff jaisa nahi balki
+                        proper studio process jaisa milega.</p>
+                    <div class="signal-row">
+                        <span class="signal-pill"><i class="fas fa-clock"></i> 48 hrs first cut</span>
+                        <span class="signal-pill"><i class="fas fa-bolt"></i> Conversion-first scripting</span>
+                        <span class="signal-pill"><i class="fas fa-mobile-screen"></i> Reels + ads ready export</span>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="mini-card">
+                            <strong>48 hrs</strong>
+                            <span>first cut turnaround</span>
+                        </div>
+                        <div class="mini-card">
+                            <strong>Same Day</strong>
+                            <span>feedback response on active orders</span>
+                        </div>
+                        <div class="mini-card">
+                            <strong>4K</strong>
+                            <span>final export ready for reels and ads</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-stack">
+                    <div class="sidebar-card highlight-card">
+                        <div class="form-head" style="margin-bottom: 0;">
+                            <div>
+                                <div class="card-kicker"><i class="fas fa-layer-group"></i> Studio intake board</div>
+                                <h3>Submit karne se pehle exactly kya ready hona chahiye</h3>
+                                <p>Jitna clear brief hoga, utna fast aur polished first draft milega.</p>
+                            </div>
+                            <span class="slot-pill">2 active slots</span>
+                        </div>
+                        <div class="preview-stack">
+                            <div class="preview-item">
+                                <i class="fas fa-bullhorn"></i>
+                                <div>
+                                    <strong>Main offer clear rakho</strong>
+                                    <span>Discount, launch angle, ya hero selling point ko brief me directly mention
+                                        karo.</span>
+                                </div>
+                            </div>
+                            <div class="preview-item">
+                                <i class="fas fa-images"></i>
+                                <div>
+                                    <strong>Brand assets upload karo</strong>
+                                    <span>Photos, product clips, logo, color preference aur reference reels ek saath
+                                        share karo.</span>
+                                </div>
+                            </div>
+                            <div class="preview-item">
+                                <i class="fas fa-bag-shopping"></i>
+                                <div>
+                                    <strong>Final CTA clear batao</strong>
+                                    <span>WhatsApp, DM, website visit ya store walk-in me se final action mention
+                                        karo.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="order-layout">
+                <div class="form-card">
+                    <div class="form-head">
+                        <div>
+                            <div class="section-chip"><i class="fas fa-clipboard-check"></i> Project submission</div>
+                            <h2>Create Your Project</h2>
+                            <p>Sirf essential details fill karo. Form ko simple rakha gaya hai taaki user ko overwhelm
+                                na ho aur team ko directly usable brief mile.</p>
+                        </div>
+                        <div class="status-stack">
+                            <span class="status-pill">Slot Reserved After Payment</span>
+                            <small>Submission ke baad aap Track Order page se live progress dekh sakte ho.</small>
+                        </div>
+                    </div>
+
+                    <form id="orderForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="clientName">Full Name</label>
+                                <input id="clientName" type="text" class="form-control" name="clientName" required
+                                    placeholder="Enter your name">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="whatsapp">WhatsApp Number</label>
+                                <input id="whatsapp" type="tel" class="form-control" name="whatsapp" required
+                                    pattern="^[0-9+\\-\\s]{10,15}$" minlength="10" placeholder="e.g. +91 98xxxxxx">
+                            </div>
+
+                            <div class="form-group full">
+                                <label for="brief">Describe Your Video</label>
+                                <textarea id="brief" class="form-control" name="brief" required
+                                    placeholder="Product kya hai, offer kya hai, kis audience ke liye hai, kis style ka video chahiye..."></textarea>
+                                <p class="helper-copy">Short formula: product + offer + target audience + visual style +
+                                    final CTA.</p>
+                                <div class="helper-row">
+                                    <span class="helper-tag">Offer angle</span>
+                                    <span class="helper-tag">Target audience</span>
+                                    <span class="helper-tag">Reference reel</span>
+                                    <span class="helper-tag">CTA line</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group full">
+                                <label for="assets">Upload Assets</label>
+                                <input id="assets" type="file" class="form-control" name="assets" multiple>
+                                <div class="promise-row">
+                                    <span class="promise-pill"><i class="fas fa-image"></i> Product photos</span>
+                                    <span class="promise-pill"><i class="fas fa-video"></i> Raw clips</span>
+                                    <span class="promise-pill"><i class="fas fa-palette"></i> Logo / brand colors</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="paymentMethod">Payment Method</label>
+                                <select class="form-control" name="paymentMethod" id="paymentMethod">
+                                    <option value="qr">QR / UPI Payment</option>
+                                    <option value="online">Online Payment</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="transactionId">Transaction ID</label>
+                                <input id="transactionId" type="text" class="form-control" name="transactionId" required
+                                    placeholder="Enter payment transaction ID">
+                            </div>
+                        </div>
+
+                        <div id="qrSection" class="qr-box">
+                            <div class="qr-head">
+                                <div>
+                                    <h3>Scan QR and upload payment proof</h3>
+                                    <p>Payment screenshot upload karne se verification fast ho jata hai.</p>
+                                </div>
+                                <span class="qr-note">UPI / QR Flow</span>
+                            </div>
+
+                            <div class="qr-grid">
+                                <div class="qr-image-wrap">
+                                    <img class="qr-image" src="assets/phonepe-qr.jpeg" alt="PhonePe QR code">
+                                </div>
+                                <div>
+                                    <div class="form-group" style="margin-bottom: 14px;">
+                                        <label for="screenshot">Upload Screenshot</label>
+                                        <input id="screenshot" type="file" class="form-control" name="screenshot"
+                                            required accept="image/*" placeholder="Screenshot">
+                                    </div>
+                                    <p>QR pay karne ke baad transaction ID aur screenshot dono add karoge to order
+                                        verification smooth rahega.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="submit-card">
+                            <strong>Ready to lock the project?</strong>
+                            <p>Submit ke baad order ID generate hoga, payment verify hone par slot secure ho jayega, aur
+                                tracking page se progress follow kar paoge.</p>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary submit-btn">Submit Order <i
+                                class="fas fa-arrow-right"></i></button>
+                    </form>
+                </div>
+
+                <aside class="sidebar-stack">
+                    <div class="sidebar-card dark-panel">
+                        <h3>What you get</h3>
+                        <div class="checkpoint">
+                            <i class="fas fa-fire"></i>
+                            <div>
+                                <strong>Hook-first direction</strong>
+                                <p>Brief ko aise convert kiya jata hai ki first seconds me attention aur intent dono
+                                    build ho.</p>
+                            </div>
+                        </div>
+                        <div class="checkpoint">
+                            <i class="fas fa-gem"></i>
+                            <div>
+                                <strong>Premium visual polish</strong>
+                                <p>Raw AI look ko typography, pacing aur grading ke saath elevated output me shape kiya
+                                    jata hai.</p>
+                            </div>
+                        </div>
+                        <div class="checkpoint">
+                            <i class="fas fa-signal"></i>
+                            <div>
+                                <strong>Sales-focused CTA ending</strong>
+                                <p>Video sirf pretty nahi hota, usme next action bhi clearly engineered hota hai.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-card">
+                        <h3>What happens next</h3>
+                        <div class="timeline">
+                            <div class="timeline-step">
+                                <div class="timeline-no">01</div>
+                                <div>
+                                    <b>Order ID generate hoga</b>
+                                    <span>Submission ke turant baad tracking reference mil jata hai.</span>
+                                </div>
+                            </div>
+                            <div class="timeline-step">
+                                <div class="timeline-no">02</div>
+                                <div>
+                                    <b>Payment verify hoga</b>
+                                    <span>Proof clear hone par project queue me slot confirm ho jata hai.</span>
+                                </div>
+                            </div>
+                            <div class="timeline-step">
+                                <div class="timeline-no">03</div>
+                                <div>
+                                    <b>Creative build start hota hai</b>
+                                    <span>Track Order page se New Order, Editing aur Completed status dekh sakte
+                                        ho.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-card">
+                        <h3>Best results ke liye</h3>
+                        <h4>Strong brief = stronger first draft</h4>
+                        <p>Brand tone, desired vibe, price point aur final CTA jitna clear hoga, utni kam revisions
+                            lagenge aur output utna hi polished aayega.</p>
+                        <ul class="tip-list" style="margin-top: 14px;">
+                            <li>Customer ka pain point ya desire mention karo.</li>
+                            <li>Offer ka strongest value point clear rakho.</li>
+                            <li>Brand luxury, bold, UGC ya fast-paced kis style me dikhna chahiye batayo.</li>
+                        </ul>
+                    </div>
+                </aside>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-shell">
+                <div class="footer-copy">
+                    <p>A Digi Xeno Service. UGC AI Video is powered by Digi Xeno to help coaching centers, schools, and
+                        businesses create high-converting promotional videos.</p>
+                    <p>&copy; 2026 Digi Xeno | UGC AI Video Service | WhatsApp: <a href="https://wa.me/919530309365">+91
+                            95303 09365</a></p>
+                </div>
+                <div class="footer-links">
+                    <a href="company.html#privacy-policy">Privacy Policy</a>
+                    <a href="company.html#terms-and-conditions">Terms & Conditions</a>
+                    <a href="company.html#refund-policy">Refund Policy</a>
+                    <a href="company.html#disclaimer">Disclaimer</a>
+                    <a href="company.html#support">Support</a>
+                    <a href="company.html#contact-us">Contact Us</a>
+                    <a href="https://digixeno.in">Visit Main Website</a>
+                    <a href="https://instagram.com/digixeno">Instagram: @digixeno</a>
+                    <a href="https://wa.me/919530309365">WhatsApp Support</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        const form = document.getElementById('orderForm');
+        const paymentMethod = document.getElementById('paymentMethod');
+        const qrSection = document.getElementById('qrSection');
+        const transactionInput = document.getElementById('transactionId');
+        const whatsappInput = document.getElementById('whatsapp');
+        const screenshotInput = document.getElementById('screenshot');
+        const submitBtn = form.querySelector('.submit-btn');
+
+        function syncPaymentUI() {
+            qrSection.style.display = 'block';
+            transactionInput.required = true;
+            screenshotInput.required = true;
+            transactionInput.placeholder = 'Enter payment transaction ID';
+        }
+
+        paymentMethod.addEventListener('change', syncPaymentUI);
+        syncPaymentUI();
+
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+
+            if (!form.reportValidity()) {
+                return;
+            }
+
+            const cleanedWhatsapp = whatsappInput.value.replace(/[\s-]/g, '');
+            const whatsappPattern = /^[+]?[0-9]{10,15}$/;
+            if (!whatsappPattern.test(cleanedWhatsapp)) {
+                whatsappInput.setCustomValidity('Valid mobile number dalna zaruri hai.');
+                form.reportValidity();
+                return;
+            }
+            whatsappInput.setCustomValidity('');
+            whatsappInput.value = cleanedWhatsapp;
+
+            const formData = new FormData(form);
+            const defaultButtonHTML = submitBtn.innerHTML;
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Submitting Order...';
+
+            try {
+                const res = await fetch(`${API_URL}/orders/create`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await res.json();
+
+                if (result.success) {
+                    alert(`Order Placed! ID: ${result.orderId}\nQueue: ${result.queueNumber}`);
+                    window.location.href = 'track.html?id=' + result.orderId;
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (err) {
+                alert('Failed to connect to server');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = defaultButtonHTML;
+            }
+        };
+    </script>
+</body>
+
+</html>

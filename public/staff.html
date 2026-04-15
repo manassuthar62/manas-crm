@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Portal | UGC AI Video</title>
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        :root {
+            --staff-primary: #2563eb;
+            --staff-primary-soft: #dbeafe;
+            --staff-surface: #ffffff;
+            --staff-muted-surface: #f8fafc;
+            --staff-border: #dbe4ef;
+            --staff-text: #0f172a;
+            --staff-muted: #64748b;
+            --staff-success: #059669;
+            --staff-warning: #d97706;
+            --staff-danger: #dc2626;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            color: var(--staff-text);
+            background:
+                radial-gradient(circle at top right, rgba(37, 99, 235, 0.08), transparent 24%),
+                #f3f7fb;
+        }
+
+        body.sidebar-open {
+            overflow: hidden;
+        }
+
+        .staff-shell {
+            display: block;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 248px;
+            padding: 24px 18px;
+            position: fixed;
+            left: 24px;
+            top: 24px;
+            height: calc(100vh - 48px);
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--staff-border);
+            border-radius: 24px;
+            box-shadow: 12px 0 28px rgba(15, 23, 42, 0.04);
+            transform: translateX(calc(-100% - 36px));
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 0.25s ease, opacity 0.25s ease;
+            z-index: 1200;
+        }
+
+        body.sidebar-open .sidebar {
+            transform: translateX(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .sidebar-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.28);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+            z-index: 1100;
+        }
+
+        body.sidebar-open .sidebar-backdrop {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+            margin-bottom: 28px;
+            padding: 14px 16px;
+            border-radius: 18px;
+            background: #ffffff;
+            border: 1px solid var(--staff-border);
+            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.04);
+        }
+
+        .brand-mark {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #2563eb, #60a5fa);
+            color: #ffffff;
+            font-size: 1.1rem;
+            overflow: hidden;
+            box-shadow: 0 12px 20px rgba(37, 99, 235, 0.22);
+        }
+        .brand-mark img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .sidebar-brand strong {
+            display: block;
+            font-size: 0.98rem;
+        }
+
+        .sidebar-brand small {
+            color: var(--staff-muted);
+            font-size: 0.78rem;
+        }
+
+        .sidebar-nav {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .side-icon {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 16px;
+            height: 48px;
+            border-radius: 14px;
+            border: none;
+            background: transparent;
+            color: var(--staff-muted);
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: left;
+            text-decoration: none;
+        }
+
+        .side-icon i {
+            width: 18px;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .side-icon.active {
+            background: #eff6ff;
+            color: var(--staff-primary);
+            box-shadow: inset 0 0 0 1px rgba(37, 99, 235, 0.08);
+        }
+
+        .logout-btn {
+            margin-top: 12px;
+        }
+
+        .sidebar-note {
+            margin-top: 18px;
+            padding: 16px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #eff6ff, #ffffff);
+            border: 1px solid var(--staff-border);
+            color: var(--staff-muted);
+            font-size: 0.83rem;
+            line-height: 1.6;
+        }
+
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 36px 32px 48px;
+        }
+
+        .dashboard-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .menu-toggle {
+            width: 52px;
+            height: 52px;
+            border: 1px solid var(--staff-border);
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.94);
+            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.05);
+            display: inline-flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+            padding: 0 14px;
+            cursor: pointer;
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 100%;
+            height: 2px;
+            border-radius: 999px;
+            background: var(--staff-text);
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        body.sidebar-open .menu-toggle span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+
+        body.sidebar-open .menu-toggle span:nth-child(2) {
+            opacity: 0;
+        }
+
+        body.sidebar-open .menu-toggle span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        .toolbar-copy {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .toolbar-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--staff-muted);
+            font-weight: 700;
+        }
+
+        .toolbar-title {
+            font-size: 0.96rem;
+            font-weight: 700;
+            color: var(--staff-text);
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .headline-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.96));
+            border: 1px solid var(--staff-border);
+            border-radius: 28px;
+            padding: 30px;
+            box-shadow: 0 18px 36px rgba(15, 23, 42, 0.04);
+            margin-bottom: 22px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 12px;
+            border-radius: 999px;
+            background: #eff6ff;
+            color: var(--staff-primary);
+            font-size: 0.74rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .headline-card h1 {
+            margin: 14px 0 8px;
+            font-size: clamp(2rem, 3vw, 2.8rem);
+            letter-spacing: -0.04em;
+            line-height: 1.02;
+        }
+
+        .headline-card p {
+            margin: 0;
+            color: var(--staff-muted);
+            font-size: 1rem;
+            max-width: 760px;
+        }
+
+        .toolbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: min(100%, 320px);
+            padding: 13px 16px;
+            border-radius: 16px;
+            background: #ffffff;
+            border: 1px solid var(--staff-border);
+            box-shadow: 0 10px 20px rgba(15, 23, 42, 0.03);
+        }
+
+        .search-box input {
+            width: 100%;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 0.95rem;
+            color: var(--staff-text);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 18px;
+            border-radius: 14px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.92rem;
+            transition: 0.2s ease;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: var(--staff-primary);
+            color: #ffffff;
+            box-shadow: 0 14px 24px rgba(37, 99, 235, 0.18);
+        }
+
+        .btn-secondary {
+            background: #ffffff;
+            color: var(--staff-text);
+            border: 1px solid var(--staff-border);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+
+        .summary-card {
+            background: #ffffff;
+            border: 1px solid var(--staff-border);
+            border-radius: 24px;
+            padding: 22px;
+            box-shadow: 0 14px 28px rgba(15, 23, 42, 0.04);
+        }
+
+        .summary-label {
+            font-size: 0.74rem;
+            font-weight: 800;
+            color: var(--staff-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .summary-value {
+            margin: 12px 0 8px;
+            font-size: 2rem;
+            line-height: 1;
+            letter-spacing: -0.04em;
+        }
+
+        .summary-meta {
+            color: var(--staff-muted);
+            font-size: 0.88rem;
+        }
+
+        .workspace-card {
+            background: #ffffff;
+            border: 1px solid var(--staff-border);
+            border-radius: 28px;
+            padding: 24px;
+            box-shadow: 0 18px 34px rgba(15, 23, 42, 0.04);
+        }
+
+        .workspace-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .workspace-header h3 {
+            margin: 0 0 6px;
+            font-size: 1.5rem;
+            letter-spacing: -0.03em;
+        }
+
+        .workspace-header p {
+            margin: 0;
+            color: var(--staff-muted);
+        }
+
+        .job-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .job-card {
+            display: grid;
+            grid-template-columns: minmax(220px, 1.2fr) 0.9fr 0.9fr auto;
+            gap: 16px;
+            align-items: center;
+            padding: 18px;
+            border-radius: 22px;
+            border: 1px solid var(--staff-border);
+            background: #fcfdff;
+        }
+
+        .job-title {
+            font-size: 1rem;
+            font-weight: 800;
+        }
+
+        .job-subtext {
+            margin-top: 4px;
+            color: var(--staff-muted);
+            font-size: 0.86rem;
+        }
+
+        .job-label {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--staff-muted);
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .job-value {
+            font-size: 0.94rem;
+            font-weight: 700;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 7px 12px;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.03em;
+        }
+
+        .status-new { background: #e0f2fe; color: #0369a1; }
+        .status-script { background: #ede9fe; color: #6d28d9; }
+        .status-editing { background: #dbeafe; color: #1d4ed8; }
+        .status-delivery { background: #fef3c7; color: #b45309; }
+        .status-correction { background: #fee2e2; color: #b91c1c; }
+        .status-completed { background: #dcfce7; color: #15803d; }
+
+        .empty-state {
+            text-align: center;
+            padding: 56px 24px;
+            color: var(--staff-muted);
+        }
+
+        .empty-state i {
+            font-size: 2.4rem;
+            margin-bottom: 14px;
+            color: #94a3b8;
+        }
+
+        .modal-shell {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1200;
+            background: rgba(15, 23, 42, 0.42);
+            backdrop-filter: blur(8px);
+            padding: 24px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-card {
+            width: min(920px, 100%);
+            max-height: calc(100vh - 48px);
+            overflow-y: auto;
+            background: #ffffff;
+            border-radius: 28px;
+            border: 1px solid var(--staff-border);
+            box-shadow: 0 26px 60px rgba(15, 23, 42, 0.18);
+            padding: 26px;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 18px;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            margin: 0 0 6px;
+            font-size: 1.6rem;
+            letter-spacing: -0.03em;
+        }
+
+        .modal-header p {
+            margin: 0;
+            color: var(--staff-muted);
+        }
+
+        .close-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            border: 1px solid var(--staff-border);
+            background: #ffffff;
+            color: var(--staff-muted);
+            cursor: pointer;
+        }
+
+        .modal-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 20px;
+        }
+
+        .section-card {
+            background: var(--staff-muted-surface);
+            border: 1px solid var(--staff-border);
+            border-radius: 22px;
+            padding: 20px;
+        }
+
+        .section-card h4 {
+            margin: 0 0 16px;
+            font-size: 1.05rem;
+        }
+
+        .field {
+            margin-bottom: 16px;
+        }
+
+        .field:last-child {
+            margin-bottom: 0;
+        }
+
+        .field label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--staff-muted);
+            font-size: 0.76rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .field-value,
+        .brief-box {
+            background: #ffffff;
+            border: 1px solid var(--staff-border);
+            border-radius: 16px;
+            padding: 14px 16px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .field-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .asset-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .asset-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            background: #ffffff;
+            border: 1px solid var(--staff-border);
+            border-radius: 14px;
+            color: var(--staff-primary);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .status-select {
+            width: 100%;
+            padding: 13px 14px;
+            border-radius: 14px;
+            border: 1px solid var(--staff-border);
+            background: #ffffff;
+            color: var(--staff-text);
+            font-size: 0.95rem;
+            font-weight: 700;
+            outline: none;
+        }
+
+        .helper-text {
+            color: var(--staff-muted);
+            font-size: 0.84rem;
+            line-height: 1.5;
+        }
+
+        .footer-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 1100px) {
+            .sidebar {
+                width: min(280px, calc(100vw - 32px));
+                left: 16px;
+                top: 16px;
+                height: calc(100vh - 32px);
+            }
+
+            .modal-grid,
+            .summary-grid,
+            .job-card {
+                grid-template-columns: 1fr;
+            }
+
+            .main-content {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .topbar,
+            .workspace-header,
+            .footer-actions,
+            .dashboard-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .sidebar {
+                width: min(280px, calc(100vw - 24px));
+                left: 12px;
+                top: 12px;
+                height: calc(100vh - 24px);
+            }
+
+            .headline-card,
+            .workspace-card,
+            .modal-card {
+                padding: 20px;
+            }
+
+            .field-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="staff-shell">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <span class="brand-mark"><img src="assets/logo.png" alt="UGC AI Video logo"></span>
+                <div>
+                    <strong>UGC AI Video</strong>
+                    <small>Editor workspace</small>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <button class="side-icon active" type="button">
+                    <i class="fas fa-briefcase"></i>
+                    <span>My Active Jobs</span>
+                </button>
+                <button id="refreshBtn" class="side-icon" type="button">
+                    <i class="fas fa-rotate-right"></i>
+                    <span>Refresh Jobs</span>
+                </button>
+                <button id="logoutBtn" class="side-icon logout-btn" type="button">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-note">
+                Assigned project ka stage ab yahin se update kar sakte ho. Admin dashboard mein latest progress reflect ho jayega.
+            </div>
+        </aside>
+        <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
+
+        <main class="main-content">
+            <div class="dashboard-toolbar">
+                <button id="menuToggle" class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="toolbar-copy">
+                    <span class="toolbar-label">Quick Menu</span>
+                    <span class="toolbar-title">Open sidebar only when needed</span>
+                </div>
+            </div>
+            <div class="headline-card">
+                <span class="eyebrow">Editor workspace</span>
+                <h1 id="welcomeText">Welcome, Editor!</h1>
+                <p>Assigned projects, payouts aur current stage ek hi jagah se manage karo. Jo progress tum yahan update karoge, wahi admin side par bhi dikhai degi.</p>
+            </div>
+
+            <div class="topbar">
+                <div class="toolbar-actions">
+                    <div class="search-box">
+                        <i class="fas fa-search" style="color: var(--staff-muted);"></i>
+                        <input id="jobSearch" type="text" placeholder="Search by client, order ID or status">
+                    </div>
+                </div>
+                <button id="refreshTopBtn" class="btn btn-secondary" type="button">
+                    <i class="fas fa-arrows-rotate"></i> Refresh Data
+                </button>
+            </div>
+
+            <section class="summary-grid">
+                <article class="summary-card">
+                    <div class="summary-label">Assigned Jobs</div>
+                    <div id="assignedCount" class="summary-value">0</div>
+                    <div class="summary-meta">Current projects under your queue</div>
+                </article>
+                <article class="summary-card">
+                    <div class="summary-label">In Progress</div>
+                    <div id="inProgressCount" class="summary-value">0</div>
+                    <div class="summary-meta">Jobs actively being worked on</div>
+                </article>
+                <article class="summary-card">
+                    <div class="summary-label">Total Payout</div>
+                    <div id="totalPayout" class="summary-value">Rs 0</div>
+                    <div class="summary-meta">Expected payout from assigned projects</div>
+                </article>
+            </section>
+
+            <section class="workspace-card">
+                <div class="workspace-header">
+                    <div>
+                        <h3>Active Workspace</h3>
+                        <p>Open any assigned order, review details and update where the project has reached.</p>
+                    </div>
+                </div>
+                <div id="jobItems" class="job-list">
+                    <div class="empty-state">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <div>Fetching your jobs...</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="detailsModal" class="modal-shell">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div>
+                    <h2 id="modalTitle">Project Details</h2>
+                    <p id="modalSubtitle">Review project brief and update the current stage.</p>
+                </div>
+                <button class="close-btn" type="button" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5000/api';
+        const user = JSON.parse(localStorage.getItem('user'));
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+        const STATUS_OPTIONS = [
+            'New Order',
+            'Script Verification',
+            'Editing',
+            'Delivery',
+            'Correction',
+            'Completed'
+        ];
+
+        let currentJobs = [];
+        let activeJob = null;
+
+        function openSidebar() {
+            document.body.classList.add('sidebar-open');
+            menuToggle.setAttribute('aria-expanded', 'true');
+        }
+
+        function closeSidebar() {
+            document.body.classList.remove('sidebar-open');
+            menuToggle.setAttribute('aria-expanded', 'false');
+        }
+
+        function toggleSidebar() {
+            if (document.body.classList.contains('sidebar-open')) {
+                closeSidebar();
+                return;
+            }
+
+            openSidebar();
+        }
+
+        menuToggle.onclick = toggleSidebar;
+        sidebarBackdrop.onclick = closeSidebar;
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                closeSidebar();
+            }
+        });
+
+        if (!user || user.role !== 'editor') {
+            window.location.href = 'admin.html';
+        } else {
+            document.getElementById('welcomeText').innerText = `Welcome, ${user.name}!`;
+            fetchMyJobs();
+        }
+
+        function formatCurrency(value) {
+            return `Rs ${Number(value || 0).toLocaleString()}`;
+        }
+
+        function getStatusClass(status) {
+            const map = {
+                'New Order': 'status-new',
+                'Script Verification': 'status-script',
+                'Editing': 'status-editing',
+                'Delivery': 'status-delivery',
+                'Correction': 'status-correction',
+                'Completed': 'status-completed'
+            };
+
+            return map[status] || 'status-editing';
+        }
+
+        function updateSummary(jobs) {
+            const inProgress = jobs.filter(job => !['Completed', 'Delivery'].includes(job.status)).length;
+            const payout = jobs.reduce((sum, job) => sum + Number(job.editorPayout || 0), 0);
+
+            document.getElementById('assignedCount').innerText = jobs.length;
+            document.getElementById('inProgressCount').innerText = inProgress;
+            document.getElementById('totalPayout').innerText = formatCurrency(payout);
+        }
+
+        async function fetchMyJobs() {
+            const container = document.getElementById('jobItems');
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <div>Fetching your jobs...</div>
+                </div>
+            `;
+
+            try {
+                const res = await fetch(`${API_BASE}/orders/all`);
+                const data = await res.json();
+
+                if (!data.success) {
+                    throw new Error(data.message || 'Could not fetch jobs');
+                }
+
+                currentJobs = (data.orders || []).filter(order =>
+                    order.editor && (order.editor._id === user.id || order.editor === user.id)
+                );
+                applySearch();
+            } catch (err) {
+                console.error(err);
+                updateSummary([]);
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-triangle-exclamation"></i>
+                        <div>Jobs load nahi hue. Backend ya network check karo.</div>
+                    </div>
+                `;
+            }
+        }
+
+        function applySearch() {
+            const query = document.getElementById('jobSearch').value.trim().toLowerCase();
+            const filteredJobs = currentJobs.filter(job =>
+                job.clientName.toLowerCase().includes(query) ||
+                job.orderId.toLowerCase().includes(query) ||
+                job.status.toLowerCase().includes(query)
+            );
+
+            updateSummary(currentJobs);
+            renderJobs(filteredJobs);
+        }
+
+        function renderJobs(jobs) {
+            const container = document.getElementById('jobItems');
+
+            if (!jobs.length) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <div>No assigned jobs found for this view.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = jobs.map(job => `
+                <div class="job-card">
+                    <div>
+                        <div class="job-title">${job.clientName}</div>
+                        <div class="job-subtext">${job.orderId} • ${job.whatsapp}</div>
+                    </div>
+                    <div>
+                        <span class="job-label">Current Stage</span>
+                        <span class="status-badge ${getStatusClass(job.status)}">${job.status}</span>
+                    </div>
+                    <div>
+                        <span class="job-label">Editor Payout</span>
+                        <div class="job-value">${formatCurrency(job.editorPayout || 0)}</div>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" type="button" onclick="showJobDetails('${job.orderId}')">
+                            <i class="fas fa-pen-to-square"></i> Open Workspace
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showJobDetails(orderId) {
+            const job = currentJobs.find(order => order.orderId === orderId);
+            if (!job) return;
+
+            activeJob = job;
+            document.getElementById('modalTitle').innerText = `${job.clientName} Workspace`;
+            document.getElementById('modalSubtitle').innerText = `${job.orderId} • Update current progress from here`;
+
+            const assetsMarkup = (job.assets && job.assets.length)
+                ? job.assets.map(asset => `
+                    <a href="http://localhost:5000/${asset.replace(/\\/g, '/')}" target="_blank" class="asset-link">
+                        <i class="fas fa-paperclip"></i>
+                        <span>${asset.split(/[\\/]/).pop()}</span>
+                    </a>
+                `).join('')
+                : `<div class="field-value">No assets uploaded</div>`;
+
+            document.getElementById('modalContent').innerHTML = `
+                <div class="modal-grid">
+                    <div class="section-card">
+                        <h4>Project Brief</h4>
+                        <div class="field">
+                            <label>Requirements</label>
+                            <div class="brief-box">${job.brief}</div>
+                        </div>
+                        <div class="field">
+                            <label>Uploaded Assets</label>
+                            <div class="asset-list">${assetsMarkup}</div>
+                        </div>
+                        <div class="field-grid">
+                            <div class="field">
+                                <label>WhatsApp</label>
+                                <div class="field-value">${job.whatsapp}</div>
+                            </div>
+                            <div class="field">
+                                <label>Editor Payout</label>
+                                <div class="field-value">${formatCurrency(job.editorPayout || 0)}</div>
+                            </div>
+                            <div class="field">
+                                <label>Payment Status</label>
+                                <div class="field-value">${job.paymentStatus === 'verified' ? 'Approved' : 'Pending Approval'}</div>
+                            </div>
+                            <div class="field">
+                                <label>Received Payment</label>
+                                <div class="field-value">${formatCurrency(job.paymentAmount || 0)}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h4>Update Progress</h4>
+                        <div class="field">
+                            <label>Current Stage</label>
+                            <select id="staffStatusSelect" class="status-select">
+                                ${STATUS_OPTIONS.map(status => `
+                                    <option value="${status}" ${job.status === status ? 'selected' : ''}>${status}</option>
+                                `).join('')}
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label>Assigned Order</label>
+                            <div class="field-value">${job.orderId}</div>
+                        </div>
+                        <div class="field">
+                            <label>Note</label>
+                            <div class="helper-text">
+                                Yahan se stage update karoge to admin dashboard mein same progress dikh jayegi. Payment aur payout admin side se manage honge.
+                            </div>
+                        </div>
+                        <div class="footer-actions">
+                            <button class="btn btn-secondary" type="button" onclick="closeModal()">Close</button>
+                            <button id="saveProgressBtn" class="btn btn-primary" type="button" onclick="saveJobProgress()">
+                                <i class="fas fa-floppy-disk"></i> Save Progress
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('detailsModal').style.display = 'flex';
+        }
+
+        async function saveJobProgress() {
+            if (!activeJob) return;
+
+            const saveBtn = document.getElementById('saveProgressBtn');
+            const nextStatus = document.getElementById('staffStatusSelect').value;
+
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+            try {
+                const res = await fetch(`${API_BASE}/orders/update/${activeJob.orderId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: nextStatus })
+                });
+                const result = await res.json();
+
+                if (!result.success) {
+                    throw new Error(result.message || 'Could not update status');
+                }
+
+                activeJob.status = result.order.status;
+                currentJobs = currentJobs.map(job =>
+                    job.orderId === activeJob.orderId
+                        ? { ...job, status: result.order.status }
+                        : job
+                );
+
+                applySearch();
+                alert('Project progress updated successfully.');
+                closeModal();
+            } catch (err) {
+                console.error(err);
+                alert(err.message || 'Could not update progress');
+            } finally {
+                if (saveBtn) {
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = '<i class="fas fa-floppy-disk"></i> Save Progress';
+                }
+            }
+        }
+
+        function closeModal() {
+            activeJob = null;
+            document.getElementById('detailsModal').style.display = 'none';
+        }
+
+        document.getElementById('jobSearch').addEventListener('input', applySearch);
+        document.getElementById('refreshBtn').onclick = () => {
+            closeSidebar();
+            fetchMyJobs();
+        };
+        document.getElementById('refreshTopBtn').onclick = fetchMyJobs;
+
+        document.getElementById('detailsModal').addEventListener('click', (event) => {
+            if (event.target.id === 'detailsModal') {
+                closeModal();
+            }
+        });
+
+        document.getElementById('logoutBtn').onclick = () => {
+            closeSidebar();
+            localStorage.clear();
+            window.location.href = 'admin.html';
+        };
+    </script>
+</body>
+</html>

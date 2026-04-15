@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Policies & Support | UGC AI Video</title>
+    <link rel="icon" type="image/png" href="assets/logo.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
+
+        :root {
+            --bg: #f6efe5;
+            --ink: #1f2233;
+            --muted: #645f73;
+            --accent: #ff6b2c;
+            --panel: rgba(255,255,255,0.84);
+            --shadow: 0 20px 50px rgba(39,28,15,0.1);
+        }
+
+        * { font-family: 'Manrope', sans-serif; }
+
+        body {
+            background:
+                radial-gradient(circle at top left, rgba(255,182,120,0.32), transparent 30%),
+                radial-gradient(circle at top right, rgba(32,123,183,0.14), transparent 28%),
+                linear-gradient(180deg, #fff9f2 0%, #f6efe5 44%, #fffdf9 100%);
+            color: var(--ink);
+        }
+
+        h1, h2, h3, .brand-mark, .eyebrow {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        a { color: inherit; }
+
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 18px 0;
+            backdrop-filter: blur(18px);
+            background: rgba(255,249,242,0.74);
+            border-bottom: 1px solid rgba(31,34,51,0.08);
+        }
+
+        .nav-shell {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 14px 20px;
+            background: rgba(255,255,255,0.58);
+            border: 1px solid rgba(255,255,255,0.72);
+            border-radius: 999px;
+            box-shadow: 0 16px 36px rgba(53,40,24,0.08);
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .brand-icon {
+            width: 44px;
+            height: 44px;
+            display: grid;
+            place-items: center;
+            border-radius: 14px;
+            color: #fff;
+            background: linear-gradient(135deg, #ff7b38, #ff4d00);
+            overflow: hidden;
+            box-shadow: 0 16px 30px rgba(232,77,14,0.28);
+        }
+        .brand-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .brand-copy small {
+            display: block;
+            font-size: 0.76rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .brand-mark {
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: -0.04em;
+        }
+
+        .site-nav {
+            display: flex;
+            gap: 18px;
+            align-items: center;
+        }
+
+        .site-nav a {
+            text-decoration: none;
+            color: var(--muted);
+            font-weight: 700;
+        }
+
+        .site-nav a:hover,
+        .site-nav a.active {
+            color: var(--ink);
+        }
+
+        .header-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 18px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 800;
+            color: #fff;
+            background: linear-gradient(135deg, #ff7b38, #ff4d00);
+            box-shadow: 0 16px 30px rgba(232,77,14,0.2);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .header-cta-secondary {
+            color: var(--ink);
+            background: rgba(31,34,51,0.08);
+            border: 1px solid rgba(31,34,51,0.1);
+            box-shadow: none;
+        }
+
+        .legal-page {
+            padding: 48px 0 32px;
+        }
+
+        .hero-card,
+        .section-card,
+        .contact-card {
+            background: var(--panel);
+            border: 1px solid rgba(255,255,255,0.8);
+            border-radius: 28px;
+            box-shadow: var(--shadow);
+        }
+
+        .hero-card {
+            padding: 32px;
+            margin-bottom: 28px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--accent);
+            margin-bottom: 14px;
+        }
+
+        .hero-card h1 {
+            margin: 0 0 12px;
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            line-height: 1.05;
+        }
+
+        .hero-card p,
+        .section-card p,
+        .contact-card p {
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .section-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+
+        .section-card,
+        .contact-card {
+            padding: 24px;
+        }
+
+        .section-card h2,
+        .contact-card h2 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.3rem;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .contact-card a {
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .footer {
+            padding: 20px 0 34px;
+        }
+
+        .footer-shell {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            padding-top: 18px;
+            border-top: 1px solid rgba(31,34,51,0.12);
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
+
+        .footer-copy {
+            display: grid;
+            gap: 8px;
+            max-width: 760px;
+        }
+
+        .footer-copy p {
+            margin: 0;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .footer-links a {
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        @media (max-width: 920px) {
+            .nav-shell,
+            .site-nav {
+                flex-direction: column;
+            }
+
+            .brand,
+            .site-nav,
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .header-actions {
+                flex-direction: column;
+            }
+
+            .header-cta {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .section-grid,
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-shell,
+            .footer-links {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="nav-shell">
+                <a href="index.html" class="brand">
+                    <span class="brand-icon"><img src="assets/logo.png" alt="UGC AI Video logo"></span>
+                    <span class="brand-copy">
+                        <small>A Digi Xeno Service</small>
+                        <span class="brand-mark">UGC AI Video</span>
+                    </span>
+                </a>
+                <nav class="site-nav">
+                    <a href="index.html">Home</a>
+                    <a href="order.html">Place Order</a>
+                    <a href="track.html">Track Order</a>
+                    <a href="company.html" class="active">Policies & Support</a>
+                </nav>
+                <div class="header-actions">
+                    <a href="order.html" class="header-cta header-cta-secondary">Video Order <i class="fas fa-video"></i></a>
+                    <a href="https://wa.me/919530309365" class="header-cta">WhatsApp Support <i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="legal-page">
+        <div class="container">
+            <section class="hero-card">
+                <div class="eyebrow"><i class="fas fa-shield-heart"></i> Digi Xeno Information</div>
+                <h1>UGC AI Video is powered by Digi Xeno.</h1>
+                <p>We help coaching centers, schools, and businesses create high-converting promotional videos with a clear process, visible support, and simple contact channels.</p>
+            </section>
+
+            <section class="section-grid">
+                <article id="privacy-policy" class="section-card">
+                    <h2>Privacy Policy</h2>
+                    <p>Client details shared through the UGC AI Video service are used only for project communication, delivery coordination, payment verification, and support. Digi Xeno does not use submitted information for unrelated purposes.</p>
+                </article>
+
+                <article id="terms-and-conditions" class="section-card">
+                    <h2>Terms & Conditions</h2>
+                    <p>By placing an order, you confirm that the business details, offer claims, and uploaded assets shared with Digi Xeno are accurate and approved for promotional use. Delivery timelines may depend on brief clarity, asset readiness, and payment confirmation.</p>
+                </article>
+
+                <article id="refund-policy" class="section-card">
+                    <h2>Refund Policy</h2>
+                    <p>Refund requests are reviewed based on project stage, payment status, and work already completed. If you need help regarding a refund, contact Digi Xeno support on WhatsApp before escalation.</p>
+                </article>
+
+                <article id="disclaimer" class="section-card">
+                    <h2>Disclaimer</h2>
+                    <p>UGC AI Video is a creative promotional service. Final ad performance can vary based on audience, offer quality, targeting, landing experience, and platform conditions. Digi Xeno does not guarantee identical results for every business.</p>
+                </article>
+
+                <article id="support" class="section-card">
+                    <h2>Support</h2>
+                    <p>For order updates, submission help, payment queries, or creative coordination, reach out on WhatsApp for the fastest response. Support is managed directly by the Digi Xeno team.</p>
+                    <p><a href="https://wa.me/919530309365">Chat on WhatsApp: +91 95303 09365</a></p>
+                </article>
+
+                <article id="contact-us" class="section-card">
+                    <h2>Contact Us</h2>
+                    <p>You can connect with Digi Xeno through the official website, Instagram, or WhatsApp support for business inquiries and service assistance.</p>
+                </article>
+            </section>
+
+            <section class="contact-grid">
+                <article class="contact-card">
+                    <h2>Visit Main Website</h2>
+                    <p>Explore Digi Xeno services and brand information on the official website.</p>
+                    <a href="https://digixeno.in">digixeno.in</a>
+                </article>
+
+                <article class="contact-card">
+                    <h2>Instagram</h2>
+                    <p>Follow updates, launches, and creative samples on the official profile.</p>
+                    <a href="https://instagram.com/digixeno">@digixeno</a>
+                </article>
+
+                <article class="contact-card">
+                    <h2>WhatsApp Support</h2>
+                    <p>Direct help for orders, support, and quick business communication.</p>
+                    <a href="https://wa.me/919530309365">+91 95303 09365</a>
+                </article>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-shell">
+                <div class="footer-copy">
+                    <p>A Digi Xeno Service. UGC AI Video is powered by Digi Xeno to help coaching centers, schools, and businesses create high-converting promotional videos.</p>
+                    <p>&copy; 2026 Digi Xeno | UGC AI Video Service | WhatsApp: <a href="https://wa.me/919530309365">+91 95303 09365</a></p>
+                </div>
+                <div class="footer-links">
+                    <a href="#privacy-policy">Privacy Policy</a>
+                    <a href="#terms-and-conditions">Terms & Conditions</a>
+                    <a href="#refund-policy">Refund Policy</a>
+                    <a href="#disclaimer">Disclaimer</a>
+                    <a href="#support">Support</a>
+                    <a href="#contact-us">Contact Us</a>
+                    <a href="https://digixeno.in">Visit Main Website</a>
+                    <a href="https://instagram.com/digixeno">Instagram: @digixeno</a>
+                    <a href="https://wa.me/919530309365">WhatsApp Support</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
