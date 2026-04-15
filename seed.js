@@ -5,7 +5,9 @@ require('dotenv').config();
 
 const seedAdmin = async () => {
     try {
-        await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/ai_video_crm');
+        const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/ai_video_crm';
+        await mongoose.connect(uri);
+        console.log('Connected to MongoDB for seeding...');
         
         const existingAdmin = await User.findOne({ email: 'admin@aivideo.com' });
         if (existingAdmin) {

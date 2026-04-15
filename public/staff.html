@@ -803,7 +803,7 @@
     </div>
 
     <script>
-        const API_BASE = 'http://localhost:5000/api';
+        const API_BASE = '/api';
         const user = JSON.parse(localStorage.getItem('user'));
         const menuToggle = document.getElementById('menuToggle');
         const sidebarBackdrop = document.getElementById('sidebarBackdrop');
@@ -968,10 +968,9 @@
             activeJob = job;
             document.getElementById('modalTitle').innerText = `${job.clientName} Workspace`;
             document.getElementById('modalSubtitle').innerText = `${job.orderId} • Update current progress from here`;
-
             const assetsMarkup = (job.assets && job.assets.length)
                 ? job.assets.map(asset => `
-                    <a href="http://localhost:5000/${asset.replace(/\\/g, '/')}" target="_blank" class="asset-link">
+                    <a href="/${asset.replace(/\\/g, '/')}" target="_blank" class="asset-link">
                         <i class="fas fa-paperclip"></i>
                         <span>${asset.split(/[\\/]/).pop()}</span>
                     </a>

@@ -23,10 +23,14 @@ app.use('/api/auth', authRoutes);
 app.use('/api/team', teamRoutes);
 
 // MongoDB Connection
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/ai_video_crm';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/ai_video_crm';
 mongoose.connect(MONGODB_URI, { family: 4 })
-    .then(() => console.log('Connected to MongoDB'))
-    .catch(err => console.error('Could not connect to MongoDB', err));
+    .then(() => console.log('Connected to MongoDB at ' + MONGODB_URI))
+    .catch(err => {
+        console.error('\x1b[31m%s\x1b[0m', 'CRITICAL ERROR: Could not connect to MongoDB!');
+        console.error('\x1b[33m%s\x1b[0m', 'Please ensure MongoDB is running: "net start MongoDB" or "mongod"');
+        console.error(err);
+    });
 
 // Serve frontend - Catch-all middleware
 app.use((req, res) => {
