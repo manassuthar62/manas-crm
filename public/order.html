@@ -121,6 +121,15 @@
         .site-nav a:hover {
             color: var(--ink);
         }
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            color: var(--ink);
+            cursor: pointer;
+            padding: 8px;
+        }
 
         .header-cta {
             display: inline-flex;
@@ -459,6 +468,16 @@
                 flex: 1 1 0;
                 justify-content: center;
             }
+            .menu-toggle { display: block; }
+            .site-nav {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                gap: 12px;
+                padding-top: 20px;
+                border-top: 1px solid rgba(31,34,51,0.08);
+            }
+            .site-nav.active { display: flex; }
 
             .hero-stats,
             .form-grid,
@@ -482,9 +501,21 @@
 
             .brand,
             .site-nav,
+            .actions .btn,
             .header-actions,
             .header-cta {
                 width: 100%;
+            }
+            .nav-shell {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: space-between;
+                border-radius: 20px;
+                padding: 12px 18px;
+            }
+            .site-nav {
+                order: 3;
+                padding: 24px 0 10px;
             }
 
             .site-nav {
@@ -904,19 +935,22 @@
                     </span>
                 </a>
 
-                <nav class="site-nav">
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <nav class="site-nav" id="siteNav">
                     <a href="index.html">Home</a>
                     <a href="order.html" class="active">Place Order</a>
                     <a href="track.html">Track Order</a>
                     <a href="admin.html">Staff</a>
+                    <div class="header-actions">
+                        <a href="order.html" class="header-cta header-cta-secondary">Video Order <i
+                                class="fas fa-video"></i></a>
+                        <a href="https://wa.me/919530309365" class="header-cta">WhatsApp Support <i
+                                class="fab fa-whatsapp"></i></a>
+                    </div>
                 </nav>
-
-                <div class="header-actions">
-                    <a href="order.html" class="header-cta header-cta-secondary">Video Order <i
-                            class="fas fa-video"></i></a>
-                    <a href="https://wa.me/919530309365" class="header-cta">WhatsApp Support <i
-                            class="fab fa-whatsapp"></i></a>
-                </div>
             </div>
         </div>
     </header>
@@ -1192,6 +1226,21 @@
     </footer>
 
     <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const siteNav = document.getElementById('siteNav');
+        const menuIcon = menuToggle.querySelector('i');
+
+        menuToggle.addEventListener('click', () => {
+            siteNav.classList.toggle('active');
+            if (siteNav.classList.contains('active')) {
+                menuIcon.classList.remove('fa-bars');
+                menuIcon.classList.add('fa-times');
+            } else {
+                menuIcon.classList.remove('fa-times');
+                menuIcon.classList.add('fa-bars');
+            }
+        });
+
         const API_URL = '/api';
         const form = document.getElementById('orderForm');
         const paymentMethod = document.getElementById('paymentMethod');

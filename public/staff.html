@@ -645,48 +645,63 @@
 
         @media (max-width: 1100px) {
             .sidebar {
-                width: min(280px, calc(100vw - 32px));
+                width: 280px;
                 left: 16px;
                 top: 16px;
                 height: calc(100vh - 32px);
             }
 
             .modal-grid,
-            .summary-grid,
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
             .job-card {
                 grid-template-columns: 1fr;
+                gap: 16px;
             }
 
             .main-content {
-                padding: 20px;
+                padding: 24px 16px;
             }
         }
 
-        @media (max-width: 720px) {
-            .topbar,
-            .workspace-header,
-            .footer-actions,
-            .dashboard-toolbar {
-                flex-direction: column;
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                left: 0;
+                top: 0;
+                height: 100vh;
+                border-radius: 0;
+                transform: translateX(-100%);
+            }
+            body.sidebar-open .sidebar { transform: translateX(0); }
+
+            .main-content { padding: 16px 12px 32px; }
+            .headline-card { padding: 24px; border-radius: 24px; }
+            .headline-card h1 { font-size: 1.8rem; }
+            
+            .summary-card { padding: 18px; }
+            .summary-value { font-size: 1.6rem; }
+            
+            .workspace-card { padding: 16px; border-radius: 20px; }
+            .workspace-header h3 { font-size: 1.3rem; }
+            
+            .job-card { padding: 20px; }
+            .modal-card { padding: 16px; border-radius: 24px; }
+            .modal-header h2 { font-size: 1.4rem; }
+            
+            .topbar, .footer-actions { 
+                flex-direction: column; 
                 align-items: stretch;
             }
+            .search-box { width: 100%; }
+            .btn { width: 100%; justify-content: center; }
+        }
 
-            .sidebar {
-                width: min(280px, calc(100vw - 24px));
-                left: 12px;
-                top: 12px;
-                height: calc(100vh - 24px);
-            }
-
-            .headline-card,
-            .workspace-card,
-            .modal-card {
-                padding: 20px;
-            }
-
-            .field-grid {
-                grid-template-columns: 1fr;
-            }
+        @media (max-width: 480px) {
+            .headline-card h1 { font-size: 1.5rem; }
+            .field-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
