@@ -40,30 +40,27 @@
             top: 0;
             z-index: 1000;
             padding: 18px 0;
-            backdrop-filter: blur(18px);
-            background: rgba(255,249,242,0.74);
-            border-bottom: 1px solid rgba(31,34,51,0.08);
+            backdrop-filter: blur(16px);
+            background: rgba(255, 250, 244, 0.76);
+            border-bottom: 1px solid rgba(31, 34, 51, 0.08);
         }
-
         .nav-shell {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 20px;
+            gap: 18px;
             padding: 14px 20px;
             background: rgba(255,255,255,0.58);
             border: 1px solid rgba(255,255,255,0.72);
             border-radius: 999px;
-            box-shadow: 0 16px 36px rgba(53,40,24,0.08);
+            box-shadow: 0 16px 36px rgba(53, 40, 24, 0.08);
         }
-
         .brand {
             display: inline-flex;
             align-items: center;
             gap: 12px;
             text-decoration: none;
         }
-
         .brand-icon {
             width: 44px;
             height: 44px;
@@ -73,7 +70,7 @@
             color: #fff;
             background: linear-gradient(135deg, #ff7b38, #ff4d00);
             overflow: hidden;
-            box-shadow: 0 16px 30px rgba(232,77,14,0.28);
+            box-shadow: 0 14px 28px rgba(232, 77, 14, 0.28);
         }
         .brand-icon img {
             width: 100%;
@@ -81,51 +78,51 @@
             object-fit: cover;
             display: block;
         }
-
         .brand-copy small {
             display: block;
-            font-size: 0.76rem;
+            font-size: 0.75rem;
             letter-spacing: 0.14em;
             text-transform: uppercase;
             color: var(--muted);
         }
-
         .brand-mark {
-            font-size: 1.15rem;
+            font-size: 1.12rem;
             font-weight: 700;
             letter-spacing: -0.04em;
         }
-
         .site-nav {
             display: flex;
-            gap: 18px;
             align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
         }
-
         .site-nav a {
             text-decoration: none;
             color: var(--muted);
             font-weight: 700;
+            font-size: 0.95rem;
         }
-
-        .site-nav a:hover,
-        .site-nav a.active {
+        .site-nav a.active, .site-nav a:hover { color: var(--ink); }
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.4rem;
             color: var(--ink);
+            cursor: pointer;
+            padding: 8px;
         }
-
         .header-cta {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 12px 18px;
+            gap: 10px;
+            padding: 11px 18px;
             border-radius: 999px;
-            text-decoration: none;
-            font-weight: 800;
+            background: var(--ink);
             color: #fff;
-            background: linear-gradient(135deg, #ff7b38, #ff4d00);
-            box-shadow: 0 16px 30px rgba(232,77,14,0.2);
+            text-decoration: none;
+            font-weight: 700;
         }
-
         .header-actions {
             display: flex;
             align-items: center;
@@ -133,12 +130,10 @@
             flex-wrap: wrap;
             justify-content: flex-end;
         }
-
         .header-cta-secondary {
-            color: var(--ink);
             background: rgba(31,34,51,0.08);
+            color: var(--ink);
             border: 1px solid rgba(31,34,51,0.1);
-            box-shadow: none;
         }
 
         .legal-page {
@@ -250,26 +245,37 @@
             font-weight: 700;
         }
 
-        @media (max-width: 920px) {
-            .nav-shell,
-            .site-nav {
-                flex-direction: column;
-            }
-
-            .brand,
-            .site-nav,
-            .header-actions {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .header-actions {
-                flex-direction: column;
-            }
-
+        @media (max-width: 780px) {
             .header-cta {
                 width: 100%;
                 justify-content: center;
+                padding: 14px;
+            }
+            .menu-toggle { 
+                display: block; 
+                margin-left: auto;
+            }
+            .nav-shell {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: space-between;
+                border-radius: 20px;
+                padding: 12px 18px;
+            }
+            .site-nav {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                gap: 16px;
+                padding: 24px 0 10px;
+                order: 3; /* Push below logo and toggle */
+            }
+            .site-nav.active { display: flex; }
+            .header-actions {
+                width: 100%;
+                flex-direction: column;
+                margin-top: 10px;
+                display: flex !important;
             }
 
             .section-grid,
@@ -296,16 +302,19 @@
                         <span class="brand-mark">UGC AI Video</span>
                     </span>
                 </a>
-                <nav class="site-nav">
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <nav class="site-nav" id="siteNav">
                     <a href="index.html">Home</a>
                     <a href="order.html">Place Order</a>
                     <a href="track.html">Track Order</a>
                     <a href="company.html" class="active">Policies & Support</a>
+                    <div class="header-actions">
+                        <a href="order.html" class="header-cta header-cta-secondary">Video Order <i class="fas fa-video"></i></a>
+                        <a href="https://wa.me/919530309365" class="header-cta">WhatsApp Support <i class="fab fa-whatsapp"></i></a>
+                    </div>
                 </nav>
-                <div class="header-actions">
-                    <a href="order.html" class="header-cta header-cta-secondary">Video Order <i class="fas fa-video"></i></a>
-                    <a href="https://wa.me/919530309365" class="header-cta">WhatsApp Support <i class="fab fa-whatsapp"></i></a>
-                </div>
             </div>
         </div>
     </header>
@@ -394,5 +403,32 @@
             </div>
         </div>
     </footer>
+    <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const siteNav = document.getElementById('siteNav');
+        const menuIcon = menuToggle.querySelector('i');
+
+        menuToggle.addEventListener('click', () => {
+            siteNav.classList.toggle('active');
+            
+            // Toggle icon between bars and times (close)
+            if (siteNav.classList.contains('active')) {
+                menuIcon.classList.remove('fa-bars');
+                menuIcon.classList.add('fa-times');
+            } else {
+                menuIcon.classList.remove('fa-times');
+                menuIcon.classList.add('fa-bars');
+            }
+        });
+
+        // Close menu when clicking a link
+        siteNav.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                siteNav.classList.remove('active');
+                menuIcon.classList.remove('fa-times');
+                menuIcon.classList.add('fa-bars');
+            });
+        });
+    </script>
 </body>
 </html>

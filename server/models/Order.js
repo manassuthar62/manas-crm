@@ -10,8 +10,13 @@ const orderSchema = new mongoose.Schema({
     paymentMethod: { type: String, enum: ['online', 'qr'], required: true },
     paymentAmount: { type: Number, default: 0 },
     paymentStatus: { type: String, enum: ['pending', 'verified', 'failed'], default: 'pending' },
-    transactionId: { type: String, required: true },
-    paymentScreenshot: { type: String, required: true },
+    transactionId: { type: String }, // Optional for online payments
+    paymentScreenshot: { type: String }, // Optional for online payments
+    // PayU specific fields
+    payuHash: { type: String },
+    mihpayid: { type: String },
+    bank_ref_num: { type: String },
+    payuStatus: { type: String },
     status: { 
         type: String, 
         enum: ['New Order', 'Script Verification', 'Editing', 'Delivery', 'Correction', 'Completed'],

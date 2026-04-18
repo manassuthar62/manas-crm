@@ -10,6 +10,7 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../public')));
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
@@ -17,10 +18,12 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 const orderRoutes = require('./routes/order');
 const authRoutes = require('./routes/auth');
 const teamRoutes = require('./routes/team');
+const paymentRoutes = require('./routes/payment');
 
 app.use('/api/orders', orderRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/team', teamRoutes);
+app.use('/api/payment', paymentRoutes);
 
 // MongoDB Connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/ai_video_crm';

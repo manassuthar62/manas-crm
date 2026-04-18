@@ -35,13 +35,11 @@ router.post('/create', upload.fields([
         const normalizedWhatsapp = String(whatsapp || '').replace(/[\s-]/g, '');
         const screenshotPath = req.files['screenshot'] ? req.files['screenshot'][0].path : null;
 
-        if (!clientName || !normalizedWhatsapp || !brief || !paymentMethod || !transactionId || !screenshotPath) {
-            if (screenshotPath) await removeUploadedFile(screenshotPath);
-            return res.status(400).json({ success: false, message: 'WhatsApp number, transaction ID, aur screenshot required hain.' });
+        if (!clientName || !normalizedWhatsapp || !brief) {
+            return res.status(400).json({ success: false, message: 'All fields are required.' });
         }
 
         if (!/^\+?[0-9]{10,15}$/.test(normalizedWhatsapp)) {
-            if (screenshotPath) await removeUploadedFile(screenshotPath);
             return res.status(400).json({ success: false, message: 'Valid WhatsApp number required hai.' });
         }
         

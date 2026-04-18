@@ -12,14 +12,15 @@
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
 
         :root {
+            --bg: #f6efe5;
             --ink: #1f2233;
-            --muted: #666078;
+            --muted: #645f73;
             --accent: #ff6b2c;
             --accent-deep: #e84d0e;
-            --panel: rgba(255, 255, 255, 0.82);
-            --line: rgba(31, 34, 51, 0.12);
-            --shadow: 0 20px 48px rgba(42, 28, 12, 0.1);
-            --shadow-xl: 0 28px 80px rgba(41, 30, 17, 0.16);
+            --panel: rgba(255,255,255,0.82);
+            --line: rgba(31,34,51,0.12);
+            --shadow: 0 18px 45px rgba(39,28,15,0.1);
+            --shadow-xl: 0 24px 70px rgba(41,30,17,0.16);
         }
 
         * {
@@ -48,79 +49,69 @@
             top: 0;
             z-index: 1000;
             padding: 18px 0;
-            backdrop-filter: blur(16px);
-            background: rgba(255, 250, 244, 0.76);
-            border-bottom: 1px solid rgba(31, 34, 51, 0.08);
+            backdrop-filter: blur(18px);
+            background: rgba(255,249,242,0.74);
+            border-bottom: 1px solid rgba(31,34,51,0.08);
         }
-
         .nav-shell {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 18px;
+            gap: 20px;
             padding: 14px 20px;
+            background: rgba(255,255,255,0.58);
+            border: 1px solid rgba(255,255,255,0.72);
             border-radius: 999px;
-            background: rgba(255, 255, 255, 0.58);
-            border: 1px solid rgba(255, 255, 255, 0.72);
-            box-shadow: 0 16px 36px rgba(53, 40, 24, 0.08);
+            box-shadow: 0 16px 36px rgba(53,40,24,0.08);
         }
-
         .brand {
             display: inline-flex;
             align-items: center;
             gap: 12px;
             text-decoration: none;
         }
-
         .brand-icon {
             width: 44px;
             height: 44px;
             display: grid;
             place-items: center;
             border-radius: 14px;
+            color: #fff;
             background: linear-gradient(135deg, #ff7b38, #ff4d00);
-            color: white;
             overflow: hidden;
-            box-shadow: 0 14px 28px rgba(232, 77, 14, 0.28);
+            box-shadow: 0 16px 30px rgba(232,77,14,0.28);
         }
-
         .brand-icon img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             display: block;
         }
-
         .brand-copy small {
             display: block;
-            font-size: 0.75rem;
+            font-size: 0.76rem;
             letter-spacing: 0.14em;
             text-transform: uppercase;
             color: var(--muted);
         }
-
         .brand-mark {
-            font-size: 1.12rem;
+            font-size: 1.15rem;
+            font-weight: 700;
             letter-spacing: -0.04em;
         }
-
         .site-nav {
             display: flex;
             align-items: center;
             gap: 24px;
             flex-wrap: wrap;
         }
-
         .site-nav a {
             text-decoration: none;
             color: var(--muted);
             font-weight: 700;
+            font-size: 0.95rem;
         }
-
-        .site-nav a.active,
-        .site-nav a:hover {
-            color: var(--ink);
-        }
+        .site-nav a.active, .site-nav a:hover { color: var(--ink); }
         .menu-toggle {
             display: none;
             background: none;
@@ -130,7 +121,6 @@
             cursor: pointer;
             padding: 8px;
         }
-
         .header-cta {
             display: inline-flex;
             align-items: center;
@@ -142,7 +132,6 @@
             text-decoration: none;
             font-weight: 700;
         }
-
         .header-actions {
             display: flex;
             align-items: center;
@@ -150,11 +139,10 @@
             flex-wrap: wrap;
             justify-content: flex-end;
         }
-
         .header-cta-secondary {
-            background: rgba(31, 34, 51, 0.08);
+            background: rgba(31,34,51,0.08);
             color: var(--ink);
-            border: 1px solid rgba(31, 34, 51, 0.1);
+            border: 1px solid rgba(31,34,51,0.1);
         }
 
         .order-page {
@@ -441,43 +429,38 @@
             }
         }
 
-        @media (max-width: 760px) {
-            .nav-shell {
-                border-radius: 28px;
-                padding: 18px;
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .brand,
-            .site-nav,
-            .header-actions {
-                width: 100%;
-            }
-
-            .site-nav {
-                justify-content: center;
-            }
-
-            .header-actions {
-                display: flex;
-                justify-content: stretch;
-            }
-
+        @media (max-width: 780px) {
             .header-cta {
-                flex: 1 1 0;
+                width: 100%;
                 justify-content: center;
+                padding: 14px;
             }
-            .menu-toggle { display: block; }
+            .menu-toggle { 
+                display: block; 
+                margin-left: auto;
+            }
+            .nav-shell {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: space-between;
+                border-radius: 20px;
+                padding: 12px 18px;
+            }
             .site-nav {
                 display: none;
                 width: 100%;
                 flex-direction: column;
-                gap: 12px;
-                padding-top: 20px;
-                border-top: 1px solid rgba(31,34,51,0.08);
+                gap: 16px;
+                padding: 24px 0 10px;
+                order: 3; /* Push below logo and toggle */
             }
             .site-nav.active { display: flex; }
+            .header-actions {
+                width: 100%;
+                flex-direction: column;
+                margin-top: 10px;
+                display: flex !important;
+            }
 
             .hero-stats,
             .form-grid,
@@ -1078,44 +1061,22 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label for="paymentMethod">Payment Method</label>
-                                <select class="form-control" name="paymentMethod" id="paymentMethod">
-                                    <option value="qr">QR / UPI Payment</option>
-                                    <option value="online">Online Payment</option>
+                            <div class="form-group full">
+                                <label>Package Choice</label>
+                                <select class="form-control" name="package" id="packageChoice" required>
+                                    <option value="" disabled selected>Select a package</option>
+                                    <option value="1 AI Promotional Video" data-price="499" data-features="1 AI Promotional Video,Free Script Included,Free Editing Included">1 Video – ₹499</option>
+                                    <option value="3 AI Promotional Videos" data-price="1299" data-features="3 AI Promotional Videos,Free Scripts Included,Free Editing Included">3 Videos – ₹1299</option>
+                                    <option value="5 AI Promotional Videos" data-price="1999" data-features="5 AI Promotional Videos,Free Scripts Included,Free Editing Included">5 Videos – ₹1999</option>
                                 </select>
                             </div>
 
-                            <div class="form-group">
-                                <label for="transactionId">Transaction ID</label>
-                                <input id="transactionId" type="text" class="form-control" name="transactionId" required
-                                    placeholder="Enter payment transaction ID">
+                            <div id="packageFeatures" class="helper-row" style="margin-top: 15px; display: none;">
+                                <!-- Features will be injected here -->
                             </div>
-                        </div>
-
-                        <div id="qrSection" class="qr-box">
-                            <div class="qr-head">
-                                <div>
-                                    <h3>Scan QR and upload payment proof</h3>
-                                    <p>Payment screenshot upload karne se verification fast ho jata hai.</p>
-                                </div>
-                                <span class="qr-note">UPI / QR Flow</span>
-                            </div>
-
-                            <div class="qr-grid">
-                                <div class="qr-image-wrap">
-                                    <img class="qr-image" src="assets/phonepe-qr.jpeg" alt="PhonePe QR code">
-                                </div>
-                                <div>
-                                    <div class="form-group" style="margin-bottom: 14px;">
-                                        <label for="screenshot">Upload Screenshot</label>
-                                        <input id="screenshot" type="file" class="form-control" name="screenshot"
-                                            required accept="image/*" placeholder="Screenshot">
-                                    </div>
-                                    <p>QR pay karne ke baad transaction ID aur screenshot dono add karoge to order
-                                        verification smooth rahega.</p>
-                                </div>
-                            </div>
+                            
+                            <!-- Online Payment is now the only method -->
+                            <input type="hidden" name="paymentMethod" id="paymentMethod" value="online">
                         </div>
 
                         <div class="submit-card">
@@ -1124,8 +1085,8 @@
                                 tracking page se progress follow kar paoge.</p>
                         </div>
 
-                        <button type="submit" class="btn btn-primary submit-btn">Submit Order <i
-                                class="fas fa-arrow-right"></i></button>
+                        <button type="submit" class="btn btn-primary submit-btn">Pay Now <i
+                                class="fas fa-credit-card"></i></button>
                     </form>
                 </div>
 
@@ -1232,6 +1193,8 @@
 
         menuToggle.addEventListener('click', () => {
             siteNav.classList.toggle('active');
+            
+            // Toggle icon between bars and times (close)
             if (siteNav.classList.contains('active')) {
                 menuIcon.classList.remove('fa-bars');
                 menuIcon.classList.add('fa-times');
@@ -1241,24 +1204,37 @@
             }
         });
 
+        // Close menu when clicking a link
+        siteNav.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                siteNav.classList.remove('active');
+                menuIcon.classList.remove('fa-times');
+                menuIcon.classList.add('fa-bars');
+            });
+        });
+
         const API_URL = '/api';
         const form = document.getElementById('orderForm');
         const paymentMethod = document.getElementById('paymentMethod');
-        const qrSection = document.getElementById('qrSection');
-        const transactionInput = document.getElementById('transactionId');
         const whatsappInput = document.getElementById('whatsapp');
-        const screenshotInput = document.getElementById('screenshot');
         const submitBtn = form.querySelector('.submit-btn');
+        const packageChoice = document.getElementById('packageChoice');
+        const packageFeatures = document.getElementById('packageFeatures');
 
-        function syncPaymentUI() {
-            qrSection.style.display = 'block';
-            transactionInput.required = true;
-            screenshotInput.required = true;
-            transactionInput.placeholder = 'Enter payment transaction ID';
+        function updateFeatures() {
+            const selectedOption = packageChoice.options[packageChoice.selectedIndex];
+            if (selectedOption && selectedOption.dataset.features) {
+                const features = selectedOption.dataset.features.split(',');
+                packageFeatures.innerHTML = features.map(f => `<span class="helper-tag">${f}</span>`).join('');
+                packageFeatures.style.display = 'flex';
+            } else {
+                packageFeatures.style.display = 'none';
+            }
         }
 
-        paymentMethod.addEventListener('change', syncPaymentUI);
-        syncPaymentUI();
+        packageChoice.addEventListener('change', updateFeatures);
+
+        // Manual payment UI removed
 
         form.onsubmit = async (e) => {
             e.preventDefault();
@@ -1281,23 +1257,79 @@
             const defaultButtonHTML = submitBtn.innerHTML;
 
             submitBtn.disabled = true;
-            submitBtn.innerHTML = 'Submitting Order...';
+            submitBtn.innerHTML = 'Processing...';
 
             try {
+                // 1. Create order in our system first
                 const res = await fetch(`${API_URL}/orders/create`, {
                     method: 'POST',
                     body: formData
                 });
                 const result = await res.json();
 
-                if (result.success) {
+                if (!result.success) {
+                    throw new Error(result.message);
+                }
+
+                if (paymentMethod.value === 'online') {
+                    // 2. If online payment, get PayU hash
+                    const selectedPackage = packageChoice.options[packageChoice.selectedIndex];
+                    const amount = selectedPackage.getAttribute('data-price');
+                    
+                    const hashRes = await fetch(`${API_URL}/payment/create-hash`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            amount: amount,
+                            productinfo: selectedPackage.value,
+                            firstname: document.getElementById('clientName').value,
+                            email: 'customer@manas.com', 
+                            phone: cleanedWhatsapp,
+                            orderId: result.orderId // Pass Order ID to link it
+                        })
+                    });
+                    const hashData = await hashRes.json();
+
+                    if (hashData.success) {
+                        // 3. Submit hidden form to PayU
+                        const payuForm = document.createElement('form');
+                        payuForm.method = 'POST';
+                        payuForm.action = 'https://secure.payu.in/_payment'; // LIVE URL
+
+                        const fields = {
+                            key: hashData.key,
+                            txnid: hashData.txnid,
+                            amount: hashData.amount,
+                            productinfo: hashData.productinfo,
+                            firstname: hashData.firstname,
+                            email: hashData.email,
+                            phone: hashData.phone,
+                            surl: hashData.surl,
+                            furl: hashData.furl,
+                            hash: hashData.hash,
+                            service_provider: 'payu_paisa'
+                        };
+
+                        for (const key in fields) {
+                            const input = document.createElement('input');
+                            input.type = 'hidden';
+                            input.name = key;
+                            input.value = fields[key];
+                            payuForm.appendChild(input);
+                        }
+
+                        document.body.appendChild(payuForm);
+                        payuForm.submit();
+                    } else {
+                        alert('Could not initiate payment gateway');
+                    }
+                } else {
+                    // Manual payment success
                     alert(`Order Placed! ID: ${result.orderId}\nQueue: ${result.queueNumber}`);
                     window.location.href = 'track.html?id=' + result.orderId;
-                } else {
-                    alert('Error: ' + result.message);
                 }
             } catch (err) {
-                alert('Failed to connect to server');
+                alert('Error: ' + err.message);
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = defaultButtonHTML;

@@ -1,0 +1,13 @@
+@echo off
+echo Starting Manas CRM...
+echo.
+echo [1/3] Installing dependencies...
+call npm install
+echo.
+echo [2/3] Seeding admin user (if not exists)...
+call node seed.js
+echo.
+echo [3/3] Starting server...
+echo Server will be available at http://localhost:5000
+npm start
+pause
