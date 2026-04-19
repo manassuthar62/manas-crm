@@ -1,0 +1,23 @@
+◇ injected env (6) from .env // tip: ◈ encrypted .env [www.dotenvx.com]
+◇ injected env (0) from .env // tip: ⌘ override existing { override: true }
+Server is running on port 5000
+Connected to MongoDB at mongodb+srv://anupratiteam_db_user:ywtKvZWYHN9xvAmJ@crm.sk6rwvh.mongodb.net/ai_video_crm?retryWrites=true&w=majority&appName=Crm
+11:44:35 am - POST /api/payment/failure
+11:50:25 am - POST /api/orders/create
+11:50:26 am - POST /api/payment/create-hash
+--- Generating Hash ---
+Target Order ID (from UI): AV-1032
+Amount: 1
+Order found and updated with TXN ID: TXN1776579626275
+11:50:58 am - POST /api/payment/success
+--- PayU Success Callback DEBUG ---
+Status from PayU: success
+TXN ID: TXN1776579626275
+Amount: 1.00
+Received Hash: 4bf4d378d0ad950445932de3b5ed164b156f4a5e5f7a668343a3112a4f32362415989ba451e8f8037f09e36b34936326ab25af917fe53b8e9db71b5f14a22361
+Order ID (udf1): AV-1032
+Reverse Hash String: EI7484STsaxv2MDudLOICX8ZmhF6ISKu|success||||||||||AV-1032|customer@manas.com|manas suthar|Test Plan|1.00|TXN1776579626275|dJxloE
+Calculated Hash: 4bf4d378d0ad950445932de3b5ed164b156f4a5e5f7a668343a3112a4f32362415989ba451e8f8037f09e36b34936326ab25af917fe53b8e9db71b5f14a22361
+Hash Validation Result: SUCCESS
+Database updated successfully for Order: AV-1032
+11:50:58 am - GET /api/orders/track/AV-1032

@@ -14,6 +14,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../public')));
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
+// Simple Request Logger
+app.use((req, res, next) => {
+    console.log(`${new Date().toLocaleTimeString()} - ${req.method} ${req.url}`);
+    next();
+});
+
 // Routes
 const orderRoutes = require('./routes/order');
 const authRoutes = require('./routes/auth');
@@ -61,6 +67,16 @@ app.use((err, req, res, next) => {
     next(err);
 });
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
+});
+
+server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+        console.error('\x1b[31m%s\x1b[0m', `CRITICAL: Port ${PORT} is already in use by another process!`);
+        console.error('\x1b[33m%s\x1b[0m', 'Please close other terminals or kill the process on port 5000.');
+        process.exit(1);
+    } else {
+        console.error('Server error:', err);
+    }
 });

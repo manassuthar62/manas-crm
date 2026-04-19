@@ -494,6 +494,94 @@
                 align-items: flex-start;
             }
         }
+        /* Success Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(31, 34, 51, 0.6);
+            backdrop-filter: blur(8px);
+            display: none;
+            place-items: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+        .modal-overlay.active { display: grid; }
+        .success-modal {
+            background: #fff;
+            border-radius: 32px;
+            padding: 40px;
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .modal-overlay.active .success-modal { transform: scale(1); }
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: #ecfdf5;
+            color: #10b981;
+            font-size: 2.5rem;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            animation: bounceIn 0.6s ease;
+        }
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .modal-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 12px;
+            color: var(--ink);
+        }
+        .modal-desc {
+            color: var(--muted);
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+        .txn-chip {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 12px 18px;
+            border-radius: 14px;
+            font-size: 0.9rem;
+            color: var(--muted);
+            margin-bottom: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .txn-chip strong { color: var(--ink); font-family: monospace; }
+        .txn-grid {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .modal-btn {
+            background: var(--ink);
+            color: #fff;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s ease;
+        }
+        .modal-btn:hover { transform: translateY(-2px); }
     </style>
 </head>
 <body>
@@ -609,6 +697,42 @@
         </div>
     </main>
 
+    <!-- Success Modal -->
+    <div id="successModal" class="modal-overlay">
+        <div class="success-modal">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2 class="modal-title">Payment Successful!</h2>
+            <p class="modal-desc">Aapki payment confirm ho gayi hai aur project slot reserve ho chuka hai. Humne creative kaam start kar diya hai!</p>
+            
+            <div class="txn-grid">
+                <div class="txn-chip">
+                    <span>Order ID</span>
+                    <strong id="modalOrderId">AV-XXXX</strong>
+                </div>
+                <div class="txn-chip">
+                    <span>Transaction ID</span>
+                    <strong id="modalTxnId">TXN-PROCESSING</strong>
+                </div>
+            </div>
+
+            <button class="modal-btn" onclick="closeModal()">Great, Thanks!</button>
+        </div>
+    </div>
+
+    <!-- Failure Modal -->
+    <div id="failureModal" class="modal-overlay">
+        <div class="success-modal" style="border-top: 6px solid #ef4444;">
+            <div class="success-icon" style="background: #fef2f2; color: #ef4444;">
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <h2 class="modal-title">Payment Failed</h2>
+            <p class="modal-desc">Aapki payment poori nahi ho saki ya security check fail ho gaya. Kripya dobara koshish karein ya support se baat karein.</p>
+            <button class="modal-btn" onclick="closeFailureModal()">Try Again</button>
+        </div>
+    </div>
+
     <footer class="footer">
         <div class="container">
             <div class="footer-shell">
@@ -682,6 +806,7 @@
             document.getElementById('trackerBox').style.display = 'block';
             document.getElementById('resName').innerText = order.clientName;
             document.getElementById('resId').innerText = order.orderId;
+            document.getElementById('resId').dataset.txnId = order.transactionId || 'N/A'; // Save for modal
 
             const pay = document.getElementById('resPay');
             if (order.paymentStatus === 'verified') {
@@ -705,12 +830,40 @@
                     step.classList.remove('active');
                 }
             });
+
+            // Trigger success modal if URL says so
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('status') === 'success') {
+                document.getElementById('modalOrderId').innerText = order.orderId || 'N/A';
+                document.getElementById('modalTxnId').innerText = urlParams.get('txnid') || order.transactionId || 'N/A';
+                document.getElementById('successModal').classList.add('active');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('successModal').classList.remove('active');
+            // Clean up URL
+            const url = new URL(window.location);
+            url.searchParams.delete('status');
+            window.history.replaceState({}, '', url);
+        }
+
+        function closeFailureModal() {
+            document.getElementById('failureModal').classList.remove('active');
+            const url = new URL(window.location);
+            url.searchParams.delete('status');
+            window.history.replaceState({}, '', url);
         }
 
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('id')) {
-            document.getElementById('trackId').value = urlParams.get('id');
+            const orderId = urlParams.get('id');
+            document.getElementById('trackId').value = orderId;
             trackOrder();
+        }
+
+        if (urlParams.get('status') === 'failed') {
+            document.getElementById('failureModal').classList.add('active');
         }
     </script>
 </body>

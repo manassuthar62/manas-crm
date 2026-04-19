@@ -1771,9 +1771,15 @@
                     }
 
                     const payStatus = document.getElementById('detPayStatus');
-                    payStatus.innerText = order.paymentStatus === 'verified' ? 'Approved & Verified' : 'Pending Admin Verification';
-                    payStatus.style.background = order.paymentStatus === 'verified' ? '#ecfdf5' : '#fff7ed';
-                    payStatus.style.color = order.paymentStatus === 'verified' ? '#10b981' : '#f97316';
+                    if (order.paymentStatus === 'verified') {
+                        payStatus.innerText = order.payuStatus === 'success' ? 'Automatically Verified (PayU)' : 'Manually Verified';
+                        payStatus.style.background = '#ecfdf5';
+                        payStatus.style.color = '#10b981';
+                    } else {
+                        payStatus.innerText = 'Pending Admin Verification';
+                        payStatus.style.background = '#fff7ed';
+                        payStatus.style.color = '#f97316';
+                    }
 
                     document.getElementById('editStatus').value = order.status;
                     document.getElementById('editPaymentAmount').value = order.paymentAmount || 0;
