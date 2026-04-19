@@ -133,6 +133,136 @@
             overflow: hidden;
         }
 
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.48);
+            backdrop-filter: blur(6px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 2500;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            width: 100%;
+            max-width: 460px;
+            background: #ffffff;
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            box-shadow: 0 24px 70px rgba(15, 23, 42, 0.18);
+            padding: 24px;
+        }
+
+        .modal-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .modal-head h3 {
+            margin: 0 0 6px;
+            font-size: 1.3rem;
+        }
+
+        .modal-head p {
+            margin: 0;
+            color: var(--text-muted);
+            line-height: 1.6;
+            font-size: 0.92rem;
+        }
+
+        .modal-close {
+            border: none;
+            background: #f8fafc;
+            color: var(--text-main);
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        .modal-form {
+            display: grid;
+            gap: 14px;
+        }
+
+        .modal-form label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .modal-form input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: #fff;
+            outline: none;
+        }
+
+        .modal-form input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+        }
+
+        .modal-form select {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: #fff;
+            outline: none;
+        }
+
+        .modal-form select:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        .modal-meta {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        .modal-meta-card {
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: #f8fafc;
+        }
+
+        .modal-meta-card span {
+            display: block;
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .modal-meta-card strong {
+            color: var(--text-main);
+            font-size: 0.96rem;
+        }
+
         .dashboard-content {
             padding: 20px;
         }
@@ -548,6 +678,14 @@
             display: flex;
             align-items: center;
             gap: 20px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .team-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 32px rgba(15, 23, 42, 0.08);
+            border-color: rgba(59, 130, 246, 0.28);
         }
 
         .team-avatar {
@@ -1349,6 +1487,85 @@
                     </div>
                 </div>
 
+                <div id="editorDetailView" class="detail-view">
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <button onclick="closeEditorProfileModal()" class="side-icon" style="background: white; border: 1px solid var(--border); cursor: pointer; width: 35px; height: 35px; font-size: 0.9rem;">
+                                <i class="fas fa-arrow-left"></i>
+                            </button>
+                            <div>
+                                <h1 id="editorProfileTitle" style="font-size: 1.4rem;">Editor Profile</h1>
+                                <p style="color: var(--text-muted); font-size: 0.88rem;">Yahin se editor ki details dekho aur login email ya password update karo.</p>
+                            </div>
+                        </div>
+                        <span id="editorAvailabilityBadge" class="payment-status-tag">Available</span>
+                    </div>
+
+                    <div class="detail-grid">
+                        <div class="detail-left">
+                            <div class="detail-section">
+                                <div class="detail-title"><i class="fas fa-id-badge" style="color: var(--primary);"></i> Editor Snapshot</div>
+                                <div class="info-group">
+                                    <div class="info-label">Role</div>
+                                    <div id="editorRoleStat" class="info-val">--</div>
+                                </div>
+                                <div class="info-group">
+                                    <div class="info-label">Active Jobs</div>
+                                    <div id="editorActiveJobsStat" class="info-val">0</div>
+                                </div>
+                                <div class="info-group" style="margin-bottom: 0;">
+                                    <div class="info-label">Total Earned</div>
+                                    <div id="editorEarnedStat" class="info-val">Rs 0</div>
+                                </div>
+                            </div>
+
+                            <div class="detail-section">
+                                <div class="detail-title"><i class="fas fa-list-check" style="color: #0f766e;"></i> Assigned Orders</div>
+                                <div id="editorAssignedOrders" style="display: grid; gap: 12px;">
+                                    Loading...
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="detail-right">
+                            <div class="detail-section">
+                                <div class="detail-title"><i class="fas fa-user-pen" style="color: #6366f1;"></i> Login & Profile</div>
+                                <form id="editorProfileForm" class="modal-form">
+                                    <div>
+                                        <label for="editorProfileName">Full Name</label>
+                                        <input id="editorProfileName" type="text" placeholder="Editor name" required>
+                                    </div>
+                                    <div>
+                                        <label for="editorProfileEmail">Login Email</label>
+                                        <input id="editorProfileEmail" type="email" placeholder="Editor login email" required>
+                                    </div>
+                                    <div>
+                                        <label for="editorProfilePassword">New Password</label>
+                                        <input id="editorProfilePassword" type="password" minlength="6" placeholder="Password change karna ho to yahan likho">
+                                    </div>
+                                    <div>
+                                        <label for="editorProfileConfirmPassword">Confirm New Password</label>
+                                        <input id="editorProfileConfirmPassword" type="password" minlength="6" placeholder="Same password dobara likho">
+                                    </div>
+                                    <div>
+                                        <label for="editorAvailability">Availability</label>
+                                        <select id="editorAvailability">
+                                            <option value="true">Available</option>
+                                            <option value="false">Busy</option>
+                                        </select>
+                                    </div>
+                                    <div class="modal-actions" style="justify-content: stretch;">
+                                        <button class="btn btn-secondary" type="button" onclick="closeEditorProfileModal()" style="flex: 1;">Back to Team</button>
+                                        <button id="saveEditorProfileBtn" class="btn btn-primary" type="submit" style="flex: 1;">
+                                            <i class="fas fa-save"></i> Save Changes
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="credentialsOverview" class="dashboard-view">
                     <div class="page-intro">
                         <div>
@@ -1568,6 +1785,41 @@
         </div>
     </div>
 
+    <div id="addEditorModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-head">
+                <div>
+                    <h3>Add New Editor</h3>
+                    <p>Name, email aur password fill karke naya editor account create karo.</p>
+                </div>
+                <button class="modal-close" type="button" onclick="closeAddEditorModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <form id="addEditorForm" class="modal-form">
+                <div>
+                    <label for="editorNameInput">Editor Name</label>
+                    <input id="editorNameInput" type="text" placeholder="Enter editor name" required>
+                </div>
+                <div>
+                    <label for="editorEmailInput">Editor Email</label>
+                    <input id="editorEmailInput" type="email" placeholder="Enter editor email" required>
+                </div>
+                <div>
+                    <label for="editorPasswordInput">Editor Password</label>
+                    <input id="editorPasswordInput" type="password" placeholder="Enter password" minlength="6" required>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" type="button" onclick="closeAddEditorModal()">Cancel</button>
+                    <button id="saveEditorBtn" class="btn btn-primary" type="submit">
+                        <i class="fas fa-user-plus"></i> Create Editor
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         // DOM Elements
         const loginOverlay = document.getElementById('loginOverlay');
@@ -1582,6 +1834,7 @@
         const orderDetail = document.getElementById('orderDetail');
         const dashboardOverview = document.getElementById('dashboardOverview');
         const teamOverview = document.getElementById('teamOverview');
+        const editorDetailView = document.getElementById('editorDetailView');
         const credentialsOverview = document.getElementById('credentialsOverview');
         const pipelineControls = document.querySelector('.pipeline-controls');
         const contentHeader = document.querySelector('.content-header');
@@ -1592,6 +1845,26 @@
         const sideOrders = document.getElementById('sideOrders');
         const sideTeam = document.getElementById('sideTeam');
         const sideSettings = document.getElementById('sideSettings');
+        const addEditorModal = document.getElementById('addEditorModal');
+        const addEditorForm = document.getElementById('addEditorForm');
+        const editorNameInput = document.getElementById('editorNameInput');
+        const editorEmailInput = document.getElementById('editorEmailInput');
+        const editorPasswordInput = document.getElementById('editorPasswordInput');
+        const saveEditorBtn = document.getElementById('saveEditorBtn');
+        const editorProfileForm = document.getElementById('editorProfileForm');
+        const editorProfileTitle = document.getElementById('editorProfileTitle');
+        const editorProfileName = document.getElementById('editorProfileName');
+        const editorProfileEmail = document.getElementById('editorProfileEmail');
+        const editorProfilePassword = document.getElementById('editorProfilePassword');
+        const editorProfileConfirmPassword = document.getElementById('editorProfileConfirmPassword');
+        const editorAvailability = document.getElementById('editorAvailability');
+        const editorAvailabilityBadge = document.getElementById('editorAvailabilityBadge');
+        const editorRoleStat = document.getElementById('editorRoleStat');
+        const editorActiveJobsStat = document.getElementById('editorActiveJobsStat');
+        const editorEarnedStat = document.getElementById('editorEarnedStat');
+        const editorAssignedOrders = document.getElementById('editorAssignedOrders');
+        const saveEditorProfileBtn = document.getElementById('saveEditorProfileBtn');
+        let currentEditorId = null;
 
         function getStoredUser() {
             try {
@@ -1662,6 +1935,7 @@
             orderDetail.style.display = 'none';
             dashboardOverview.style.display = 'none';
             teamOverview.style.display = 'none';
+            editorDetailView.style.display = 'none';
             credentialsOverview.style.display = 'none';
             pipelineControls.style.display = 'none';
             contentHeader.style.display = 'none';
@@ -1925,24 +2199,188 @@
         };
 
         function openAddEditorModal() {
-            const name = prompt('Enter Editor Name:');
-            const email = prompt('Enter Editor Email:');
-            const password = prompt('Enter Editor Password:');
+            addEditorForm.reset();
+            addEditorModal.classList.add('active');
+            editorNameInput.focus();
+        }
+
+        function closeAddEditorModal() {
+            addEditorModal.classList.remove('active');
+        }
+
+        window.closeAddEditorModal = closeAddEditorModal;
+        
+        function closeEditorProfileModal() {
+            currentEditorId = null;
+            editorProfileForm.reset();
+            editorAssignedOrders.innerHTML = 'Loading...';
+            hideAllViews();
+            teamOverview.style.display = 'block';
+            sideTeam.classList.add('active');
+        }
+
+        async function openEditorProfile(memberId) {
+            currentEditorId = memberId;
+            hideAllViews();
+            editorDetailView.style.display = 'block';
+            sideTeam.classList.add('active');
+            window.scrollTo(0, 0);
+            editorProfileTitle.innerText = 'Editor Profile';
+            editorProfileName.value = '';
+            editorProfileEmail.value = '';
+            editorProfilePassword.value = '';
+            editorProfileConfirmPassword.value = '';
+            editorAvailability.value = 'true';
+            editorRoleStat.innerText = '--';
+            editorActiveJobsStat.innerText = '0';
+            editorEarnedStat.innerText = 'Rs 0';
+            editorAssignedOrders.innerHTML = 'Loading...';
+            editorAvailabilityBadge.innerText = 'Loading...';
+            editorAvailabilityBadge.style.background = '#e2e8f0';
+            editorAvailabilityBadge.style.color = '#475569';
+
+            try {
+                const response = await fetch(`${API_BASE}/team/${memberId}`);
+                if (!response.ok) throw new Error(`Editor request failed with ${response.status}`);
+
+                const result = await response.json();
+                if (!result.success) throw new Error(result.message || 'Editor details load nahi ho sake.');
+
+                const member = result.member;
+                editorProfileTitle.innerText = `${member.name} Profile`;
+                editorProfileName.value = member.name || '';
+                editorProfileEmail.value = member.email || '';
+                editorAvailability.value = String(member.isAvailable !== false);
+                editorRoleStat.innerText = member.role || 'editor';
+                editorActiveJobsStat.innerText = String(member.activeJobs || 0);
+                editorEarnedStat.innerText = formatCurrency(member.totalEarned || 0);
+                editorAvailabilityBadge.innerText = member.isAvailable === false ? 'Busy' : 'Available';
+                editorAvailabilityBadge.style.background = member.isAvailable === false ? '#fff7ed' : '#ecfdf5';
+                editorAvailabilityBadge.style.color = member.isAvailable === false ? '#d97706' : '#10b981';
+
+                if (member.assignedOrders?.length) {
+                    editorAssignedOrders.innerHTML = member.assignedOrders.map(order => `
+                        <div style="display: flex; justify-content: space-between; gap: 12px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 16px; background: #f8fafc;">
+                            <div>
+                                <div style="font-weight: 700;">${order.orderId}</div>
+                                <div style="font-size: 0.82rem; color: var(--text-muted);">${order.clientName || 'No client name'}</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 0.82rem; color: var(--text-muted);">${order.status}</div>
+                                <div style="font-weight: 700;">${formatCurrency(order.editorPayout || 0)}</div>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    editorAssignedOrders.innerHTML = '<div style="color: var(--text-muted);">Abhi koi assigned order nahi hai.</div>';
+                }
+            } catch (error) {
+                console.error(error);
+                editorAssignedOrders.innerHTML = `<div style="color: #b91c1c;">${error.message}</div>`;
+                editorAvailabilityBadge.innerText = 'Error';
+                editorAvailabilityBadge.style.background = '#fef2f2';
+                editorAvailabilityBadge.style.color = '#b91c1c';
+            }
+        }
+
+        window.closeEditorProfileModal = closeEditorProfileModal;
+        window.openEditorProfile = openEditorProfile;
+
+        addEditorForm?.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const name = editorNameInput.value.trim();
+            const email = editorEmailInput.value.trim();
+            const password = editorPasswordInput.value;
             if (!name || !email || !password) return;
 
-            fetch(`${API_BASE}/auth/register`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, email, password, role: 'editor' })
-            }).then(r => r.json()).then(res => {
-                if (res.success) {
-                    alert('Editor added successfully!');
-                    fetchTeam();
-                } else {
-                    alert('Error: ' + res.message);
+            saveEditorBtn.disabled = true;
+            saveEditorBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password, role: 'editor' })
+                });
+                const result = await response.json();
+
+                if (!result.success) {
+                    throw new Error(result.message || 'Could not create editor');
                 }
-            });
-        }
+
+                closeAddEditorModal();
+                alert('Editor added successfully!');
+                fetchTeam();
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                saveEditorBtn.disabled = false;
+                saveEditorBtn.innerHTML = '<i class="fas fa-user-plus"></i> Create Editor';
+            }
+        });
+
+        editorProfileForm?.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            if (!currentEditorId) return;
+
+            const name = editorProfileName.value.trim();
+            const email = editorProfileEmail.value.trim().toLowerCase();
+            const password = editorProfilePassword.value;
+            const confirmPassword = editorProfileConfirmPassword.value;
+            const isAvailable = editorAvailability.value === 'true';
+
+            if (!name || !email) {
+                alert('Name aur email required hai.');
+                return;
+            }
+
+            if ((password || confirmPassword) && password !== confirmPassword) {
+                alert('New password aur confirm password same hone chahiye.');
+                editorProfileConfirmPassword.focus();
+                return;
+            }
+
+            if (password && password.length < 6) {
+                alert('Password kam se kam 6 characters ka hona chahiye.');
+                editorProfilePassword.focus();
+                return;
+            }
+
+            saveEditorProfileBtn.disabled = true;
+            saveEditorProfileBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+            try {
+                const response = await fetch(`${API_BASE}/team/${currentEditorId}/credentials`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name,
+                        email,
+                        password: password || undefined,
+                        isAvailable
+                    })
+                });
+
+                const result = await response.json();
+                if (!result.success) {
+                    throw new Error(result.message || 'Editor update nahi ho saka.');
+                }
+
+                await fetchTeam();
+                await openEditorProfile(currentEditorId);
+                editorProfilePassword.value = '';
+                editorProfileConfirmPassword.value = '';
+                alert('Editor details update ho gayi.');
+            } catch (error) {
+                console.error(error);
+                alert(error.message || 'Editor details update nahi ho saki.');
+            } finally {
+                saveEditorProfileBtn.disabled = false;
+                saveEditorProfileBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
+            }
+        });
 
         const summaryCards = document.querySelectorAll('.summary-card .sum-val');
         const miniStats = document.querySelectorAll('.mini-stat .sub-val');
@@ -2289,12 +2727,12 @@
             }
 
             container.innerHTML = members.map(m => `
-                <div class="team-card">
+                <div class="team-card" onclick="openEditorProfile('${m.id}')">
                     <div class="team-avatar"><i class="fas fa-user-ninja"></i></div>
                     <div class="team-info">
                         <div style="display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
                             <h3 style="font-size: 1rem;">${m.name}</h3>
-                            <span class="payment-status-tag" style="background: #ecfdf5; color: #10b981;">Online</span>
+                            <span class="payment-status-tag" style="background: ${m.isAvailable === false ? '#fff7ed' : '#ecfdf5'}; color: ${m.isAvailable === false ? '#d97706' : '#10b981'};">${m.isAvailable === false ? 'Busy' : 'Available'}</span>
                         </div>
                         <p style="font-size: 0.8rem; color: var(--text-muted);">${m.role}</p>
                         <div class="team-stats">
@@ -2375,6 +2813,22 @@
                 alert(error.message || 'Credentials update nahi ho sake.');
             }
         };
+
+        addEditorModal?.addEventListener('click', (event) => {
+            if (event.target === addEditorModal) {
+                closeAddEditorModal();
+            }
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && editorDetailView?.style.display === 'block') {
+                closeEditorProfileModal();
+            }
+
+            if (event.key === 'Escape' && addEditorModal?.classList.contains('active')) {
+                closeAddEditorModal();
+            }
+        });
 
         // On Load
         window.onload = () => {
