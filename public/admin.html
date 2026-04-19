@@ -1192,6 +1192,7 @@
             background: #ffffff;
         }
 
+        /* Responsive Refinements */
         @media (max-width: 1100px) {
             .sidebar {
                 width: 280px;
@@ -1212,6 +1213,7 @@
             .page-intro {
                 flex-direction: column;
                 align-items: stretch;
+                gap: 15px;
             }
             .stats-row { justify-content: flex-start; }
         }
@@ -1224,54 +1226,85 @@
                 height: 100vh;
                 border-radius: 0;
                 transform: translateX(-100%);
+                z-index: 10000;
             }
             body.sidebar-open .sidebar { transform: translateX(0); }
             
             .dashboard-content {
-                padding: 16px 12px 32px;
+                padding: 16px 12px 100px; /* Space for bottom content */
             }
 
-            .page-intro { padding: 20px; }
-            .page-intro h1 { font-size: 1.8rem; }
+            .main-layout { margin-left: 0; }
+
+            .page-intro { 
+                padding: 15px; 
+                margin-bottom: 20px;
+                background: #f8fafc;
+                border-radius: 16px;
+            }
+            .page-intro h1 { font-size: 1.5rem; margin-bottom: 4px; }
+            .page-intro p { font-size: 0.85rem; }
             
-            .mini-stat {
-                min-width: 0;
-                width: 100%;
-            }
+            .summary-grid { gap: 12px; }
+            .summary-card { padding: 16px; }
+            .sum-val { font-size: 1.4rem; }
 
+            /* Pipeline Card Mobile Transformation */
             .pipeline-card {
-                grid-template-columns: 1fr;
-                gap: 16px;
-                padding: 20px;
+                grid-template-columns: 1fr !important;
+                gap: 12px;
+                padding: 18px;
+                position: relative;
             }
 
             .list-header { display: none; }
             
             .row-actions {
-                justify-content: stretch;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+                width: 100%;
                 margin-top: 10px;
+                padding-top: 10px;
+                border-top: 1px solid var(--border);
             }
-            .row-actions .btn {
-                flex: 1;
-                text-align: center;
+            .row-actions .btn-review {
+                width: 100%;
                 justify-content: center;
+                font-size: 0.75rem;
+                padding: 12px 8px;
             }
 
-            .detail-grid { gap: 12px; }
-            .detail-section { padding: 16px; }
-            
-            .summary-card { padding: 20px; }
-            .sum-val { font-size: 1.6rem; }
+            /* Alert card mobile */
+            #alertItems .pipeline-card {
+                grid-template-columns: auto 1fr auto !important;
+            }
+
+            /* Modal Mobile Scaling */
+            .modal-card {
+                width: 96% !important;
+                padding: 20px !important;
+                margin: 10px !important;
+                max-height: 90vh;
+                display: flex;
+                flex-direction: column;
+            }
+            .modal-body {
+                overflow-y: auto;
+                flex: 1;
+            }
 
             .dashboard-toolbar {
-                padding: 0 4px;
+                padding: 10px 0;
+                border-bottom: 1px solid var(--border);
+                margin-bottom: 20px;
             }
-            .toolbar-title { font-size: 0.85rem; }
+            .toolbar-title { font-size: 0.8rem; }
         }
 
         @media (max-width: 480px) {
-            .page-intro h1 { font-size: 1.5rem; }
-            .pill { padding: 8px 12px; font-size: 0.8rem; }
+            .page-intro h1 { font-size: 1.3rem; }
+            .pill { padding: 8px 10px; font-size: 0.75rem; }
             .bar-search { width: 100%; }
         }
         .notification-badge {
