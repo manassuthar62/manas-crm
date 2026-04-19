@@ -3,10 +3,13 @@ const mongoose = require('mongoose');
 const orderSchema = new mongoose.Schema({
     orderId: { type: String, unique: true, required: true },
     queueNumber: { type: Number },
-    clientName: { type: String, required: true },
-    whatsapp: { type: String, required: true },
-    brief: { type: String, required: true },
+    clientName: { type: String, default: '' },
+    whatsapp: { type: String, default: '' },
+    brief: { type: String, default: '' },
     assets: [{ type: String }], // File paths
+    packageName: { type: String, default: '' },
+    packagePrice: { type: Number, default: 0 },
+    detailsSubmitted: { type: Boolean, default: false },
     paymentMethod: { type: String, enum: ['online', 'qr'], required: true },
     paymentAmount: { type: Number, default: 0 },
     paymentStatus: { type: String, enum: ['pending', 'verified', 'failed'], default: 'pending' },
@@ -26,6 +29,7 @@ const orderSchema = new mongoose.Schema({
     editorPayout: { type: Number, default: 0 },
     assignedStaff: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     eta: { type: Date },
+    statusUpdatedAt: { type: Date, default: Date.now },
     createdAt: { type: Date, default: Date.now }
 });
 

@@ -1,3 +1,21 @@
-(node:7000) [MONGOOSE] Warning: mongoose: the `new` option for `findOneAndUpdate()` and `findOneAndReplace()` is deprecated. Use `returnDocument: 'after'` instead.
+Create payment order error: MongoNetworkError: getaddrinfo ENOTFOUND ac-zkc8hb9-shard-00-02.sk6rwvh.mongodb.net
+    at TLSSocket.<anonymous> (C:\Users\hp\OneDrive\Desktop\MANAS GIT HUB\manas\node_modules\mongodb\lib\cmap\connect.js:313:44)
+    at Object.onceWrapper (node:events:623:26)
+    at TLSSocket.emit (node:events:508:28)
+    at emitErrorNT (node:internal/streams/destroy:170:8)
+    at emitErrorCloseNT (node:internal/streams/destroy:129:3)
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21) {
+  errorLabelSet: Set(2) { 'SystemOverloadedError', 'RetryableError' },
+  beforeHandshake: false,
+  connectionGeneration: 2,
+  [cause]: Error: getaddrinfo ENOTFOUND ac-zkc8hb9-shard-00-02.sk6rwvh.mongodb.net
+      at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:111:26) {
+    errno: -3008,
+    code: 'ENOTFOUND',
+    syscall: 'getaddrinfo',
+    hostname: 'ac-zkc8hb9-shard-00-02.sk6rwvh.mongodb.net'
+  }
+}
+(node:8292) [MONGOOSE] Warning: mongoose: the `new` option for `findOneAndUpdate()` and `findOneAndReplace()` is deprecated. Use `returnDocument: 'after'` instead.
 (Use `node --trace-warnings ...` to show where the warning was created)
-(node:7000) [MONGOOSE] Warning: mongoose: the `new` option for `findOneAndUpdate()` and `findOneAndReplace()` is deprecated. Use `returnDocument: 'after'` instead.
+(node:8292) [MONGOOSE] Warning: mongoose: the `new` option for `findOneAndUpdate()` and `findOneAndReplace()` is deprecated. Use `returnDocument: 'after'` instead.

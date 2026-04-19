@@ -49,37 +49,39 @@
             top: 0;
             z-index: 1000;
             padding: 18px 0;
-            backdrop-filter: blur(18px);
-            background: rgba(255,249,242,0.74);
-            border-bottom: 1px solid rgba(31,34,51,0.08);
+            backdrop-filter: blur(16px);
+            background: rgba(255, 250, 244, 0.76);
+            border-bottom: 1px solid rgba(31, 34, 51, 0.08);
         }
         .nav-shell {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 20px;
+            gap: 18px;
             padding: 14px 20px;
-            background: rgba(255,255,255,0.58);
-            border: 1px solid rgba(255,255,255,0.72);
             border-radius: 999px;
-            box-shadow: 0 16px 36px rgba(53,40,24,0.08);
+            background: rgba(255, 255, 255, 0.58);
+            border: 1px solid rgba(255, 255, 255, 0.72);
+            box-shadow: 0 16px 36px rgba(53, 40, 24, 0.08);
         }
         .brand {
             display: inline-flex;
             align-items: center;
             gap: 12px;
             text-decoration: none;
+            color: var(--ink);
         }
+        .brand:visited { color: var(--ink); }
         .brand-icon {
             width: 44px;
             height: 44px;
             display: grid;
             place-items: center;
             border-radius: 14px;
-            color: #fff;
             background: linear-gradient(135deg, #ff7b38, #ff4d00);
+            color: white;
             overflow: hidden;
-            box-shadow: 0 16px 30px rgba(232,77,14,0.28);
+            box-shadow: 0 14px 28px rgba(232, 77, 14, 0.28);
         }
         .brand-icon img {
             width: 100%;
@@ -89,14 +91,13 @@
         }
         .brand-copy small {
             display: block;
-            font-size: 0.76rem;
+            font-size: 0.75rem;
             letter-spacing: 0.14em;
             text-transform: uppercase;
             color: var(--muted);
         }
         .brand-mark {
-            font-size: 1.15rem;
-            font-weight: 700;
+            font-size: 1.12rem;
             letter-spacing: -0.04em;
         }
         .site-nav {
@@ -146,15 +147,11 @@
         }
 
         .order-page {
-            padding: 44px 0 72px;
+            padding: 10px 0 56px;
         }
 
         .hero-band {
-            display: grid;
-            grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
-            gap: 22px;
-            align-items: stretch;
-            margin-bottom: 22px;
+            display: none;
         }
 
         .hero-copy,
@@ -169,7 +166,7 @@
         }
 
         .hero-copy {
-            padding: 30px;
+            padding: 24px;
         }
 
         .eyebrow {
@@ -187,11 +184,11 @@
         }
 
         .hero-copy h1 {
-            font-size: clamp(2.4rem, 5vw, 4.1rem);
-            line-height: 0.98;
+            font-size: clamp(2rem, 3.8vw, 3rem);
+            line-height: 1.04;
             letter-spacing: -0.06em;
-            margin-bottom: 14px;
-            max-width: 11ch;
+            margin-bottom: 10px;
+            max-width: 10ch;
         }
 
         .hero-copy p,
@@ -227,8 +224,8 @@
 
         .order-layout {
             display: grid;
-            grid-template-columns: minmax(0, 1.15fr) 340px;
-            gap: 22px;
+            grid-template-columns: 1fr;
+            gap: 0;
             align-items: start;
         }
 
@@ -378,7 +375,11 @@
         }
 
         .sidebar-card {
-            padding: 24px;
+            padding: 20px;
+        }
+
+        .order-layout > .sidebar-stack {
+            display: none;
         }
 
         .sidebar-card h3 {
@@ -474,39 +475,10 @@
                 padding: 0 16px;
             }
 
-            .nav-shell,
-            .site-nav,
             .form-head,
             .qr-head {
                 flex-direction: column;
                 align-items: flex-start;
-            }
-
-            .brand,
-            .site-nav,
-            .actions .btn,
-            .header-actions,
-            .header-cta {
-                width: 100%;
-            }
-            .nav-shell {
-                flex-direction: row;
-                flex-wrap: wrap;
-                justify-content: space-between;
-                border-radius: 20px;
-                padding: 12px 18px;
-            }
-            .site-nav {
-                order: 3;
-                padding: 24px 0 10px;
-            }
-
-            .site-nav {
-                gap: 16px;
-            }
-
-            .header-actions {
-                flex-direction: column;
             }
 
             .hero-copy,
@@ -524,7 +496,7 @@
         .hero-copy.hero-panel {
             position: relative;
             overflow: hidden;
-            padding: 34px;
+            padding: 26px;
             background:
                 radial-gradient(circle at top right, rgba(255, 145, 96, 0.24), transparent 34%),
                 linear-gradient(145deg, #1f2233 0%, #252d48 56%, #20263d 100%);
@@ -549,16 +521,17 @@
         }
 
         .hero-copy.hero-panel h1 {
-            max-width: 9ch;
-            margin-bottom: 16px;
-            font-size: clamp(2.7rem, 5vw, 4.5rem);
-            line-height: 0.98;
+            max-width: 10ch;
+            margin-bottom: 12px;
+            font-size: clamp(2.1rem, 4vw, 3.3rem);
+            line-height: 1.03;
         }
 
         .hero-copy.hero-panel>p {
-            max-width: 620px;
+            max-width: 560px;
             color: rgba(255, 255, 255, 0.78);
-            font-size: 1.02rem;
+            font-size: 0.94rem;
+            line-height: 1.7;
         }
 
         .signal-row,
@@ -569,7 +542,7 @@
         }
 
         .signal-row {
-            margin-bottom: 22px;
+            margin-bottom: 16px;
         }
 
         .signal-pill,
@@ -583,10 +556,10 @@
         }
 
         .signal-pill {
-            padding: 9px 13px;
+            padding: 8px 12px;
             background: rgba(255, 255, 255, 0.12);
             color: #fff;
-            font-size: 0.82rem;
+            font-size: 0.76rem;
         }
 
         .hero-copy.hero-panel .hero-stats {
@@ -610,7 +583,7 @@
         }
 
         .sidebar-card.highlight-card {
-            padding: 28px;
+            padding: 22px;
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 246, 238, 0.95));
             border-color: rgba(255, 255, 255, 0.92);
             height: 100%;
@@ -643,8 +616,8 @@
 
         .preview-stack {
             display: grid;
-            gap: 14px;
-            margin-top: 18px;
+            gap: 12px;
+            margin-top: 14px;
             flex: 1;
             align-content: start;
         }
@@ -652,19 +625,19 @@
         .preview-item {
             display: grid;
             grid-template-columns: auto 1fr;
-            gap: 14px;
-            padding: 16px 18px;
-            border-radius: 20px;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 18px;
             background: rgba(255, 255, 255, 0.78);
             border: 1px solid rgba(31, 34, 51, 0.08);
         }
 
         .preview-item i {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             display: grid;
             place-items: center;
-            border-radius: 14px;
+            border-radius: 12px;
             background: rgba(255, 107, 44, 0.12);
             color: var(--accent-deep);
         }
@@ -672,17 +645,31 @@
         .preview-item strong {
             display: block;
             margin-bottom: 4px;
-            font-size: 1rem;
+            font-size: 0.95rem;
         }
 
         .preview-item span {
             color: var(--muted);
-            font-size: 0.9rem;
-            line-height: 1.6;
+            font-size: 0.84rem;
+            line-height: 1.55;
         }
 
         .form-card {
-            padding: 32px;
+            padding: 26px;
+        }
+
+        .form-head h2 {
+            font-size: 1.45rem;
+        }
+
+        .form-head p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .submit-btn {
+            margin-top: 18px;
+            padding: 14px 20px;
         }
 
         .section-chip {
@@ -773,6 +760,120 @@
             color: var(--muted);
             line-height: 1.7;
             font-size: 0.92rem;
+        }
+
+        .flow-banner {
+            display: none;
+            margin-bottom: 18px;
+            padding: 14px 16px;
+            border-radius: 18px;
+            font-size: 0.94rem;
+            line-height: 1.6;
+        }
+
+        .flow-banner.active {
+            display: block;
+        }
+
+        .flow-banner.info {
+            background: rgba(59, 130, 246, 0.08);
+            color: #1d4ed8;
+            border: 1px solid rgba(59, 130, 246, 0.16);
+        }
+
+        .flow-banner.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: #047857;
+            border: 1px solid rgba(16, 185, 129, 0.18);
+        }
+
+        .flow-banner.error {
+            background: rgba(239, 68, 68, 0.08);
+            color: #b91c1c;
+            border: 1px solid rgba(239, 68, 68, 0.18);
+        }
+
+        .hidden-step {
+            display: none !important;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(31, 34, 51, 0.6);
+            backdrop-filter: blur(8px);
+            display: none;
+            place-items: center;
+            z-index: 2500;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: grid;
+        }
+
+        .success-modal {
+            background: #fff;
+            border-radius: 32px;
+            padding: 40px;
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: #ecfdf5;
+            color: #10b981;
+            font-size: 2.5rem;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+        }
+
+        .modal-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 12px;
+            color: var(--ink);
+        }
+
+        .modal-desc {
+            color: var(--muted);
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .txn-chip {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 12px 18px;
+            border-radius: 14px;
+            font-size: 0.9rem;
+            color: var(--muted);
+            margin-bottom: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .txn-chip strong {
+            color: var(--ink);
+            font-family: monospace;
+        }
+
+        .modal-btn {
+            background: var(--ink);
+            color: #fff;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
         }
 
         .sidebar-card.dark-panel {
@@ -943,10 +1044,8 @@
             <section class="hero-band">
                 <div class="hero-copy hero-panel">
                     <div class="eyebrow"><i class="fas fa-wand-magic-sparkles"></i> Premium intake experience</div>
-                    <h1>Brief bhejo. Hum usse polished ad-ready creative me shape kar denge.</h1>
-                    <p>Page ko intentionally clean aur confidence-building rakha gaya hai taaki client ko lage ki
-                        workflow organized hai, payment clear hai, aur output random freelancer handoff jaisa nahi balki
-                        proper studio process jaisa milega.</p>
+                    <h1>Brief bhejo. Hum usse polished creative bana denge.</h1>
+                    <p>Simple process rakha gaya hai: package choose karo, payment karo, aur phir details submit karke project start kara do.</p>
                     <div class="signal-row">
                         <span class="signal-pill"><i class="fas fa-clock"></i> 48 hrs first cut</span>
                         <span class="signal-pill"><i class="fas fa-bolt"></i> Conversion-first scripting</span>
@@ -955,15 +1054,15 @@
                     <div class="hero-stats">
                         <div class="mini-card">
                             <strong>48 hrs</strong>
-                            <span>first cut turnaround</span>
+                            <span>first cut timeline</span>
                         </div>
                         <div class="mini-card">
-                            <strong>Same Day</strong>
-                            <span>feedback response on active orders</span>
+                            <strong>Fast</strong>
+                            <span>clear update flow</span>
                         </div>
                         <div class="mini-card">
-                            <strong>4K</strong>
-                            <span>final export ready for reels and ads</span>
+                            <strong>Ready</strong>
+                            <span>reels and ads output</span>
                         </div>
                     </div>
                 </div>
@@ -973,8 +1072,8 @@
                         <div class="form-head" style="margin-bottom: 0;">
                             <div>
                                 <div class="card-kicker"><i class="fas fa-layer-group"></i> Studio intake board</div>
-                                <h3>Submit karne se pehle exactly kya ready hona chahiye</h3>
-                                <p>Jitna clear brief hoga, utna fast aur polished first draft milega.</p>
+                                <h3>Form bharne se pehle kya ready rakho</h3>
+                                <p>Short aur clear brief doge to team fast kaam start kar payegi.</p>
                             </div>
                             <span class="slot-pill">2 active slots</span>
                         </div>
@@ -1013,33 +1112,36 @@
                     <div class="form-head">
                         <div>
                             <div class="section-chip"><i class="fas fa-clipboard-check"></i> Project submission</div>
-                            <h2>Create Your Project</h2>
-                            <p>Sirf essential details fill karo. Form ko simple rakha gaya hai taaki user ko overwhelm
-                                na ho aur team ko directly usable brief mile.</p>
+                            <h2 id="flowTitle">Choose Package & Pay</h2>
+                            <p id="flowDesc">Ab pehle package choose karke payment complete karo. Payment successful hone ke baad
+                                isi page par project details form khul jayega.</p>
                         </div>
                         <div class="status-stack">
-                            <span class="status-pill">Slot Reserved After Payment</span>
-                            <small>Submission ke baad aap Track Order page se live progress dekh sakte ho.</small>
+                            <span id="flowPill" class="status-pill">Step 1: Payment First</span>
+                            <small id="flowMeta">Payment ke baad hi name, WhatsApp, brief aur assets submit karne honge.</small>
                         </div>
                     </div>
 
                     <form id="orderForm">
+                        <div id="paymentBanner" class="flow-banner info active">Package select karo aur payment complete karo. Details form payment ke baad automatic unlock ho jayega.</div>
+                        <div id="successBanner" class="flow-banner success">Payment successful. Ab apni project details submit kar do.</div>
+                        <div id="errorBanner" class="flow-banner error"></div>
                         <div class="form-grid">
-                            <div class="form-group">
+                            <div class="form-group hidden-step" data-details-only>
                                 <label for="clientName">Full Name</label>
-                                <input id="clientName" type="text" class="form-control" name="clientName" required
+                                <input id="clientName" type="text" class="form-control" name="clientName"
                                     placeholder="Enter your name">
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group hidden-step" data-details-only>
                                 <label for="whatsapp">WhatsApp Number</label>
-                                <input id="whatsapp" type="tel" class="form-control" name="whatsapp" required
+                                <input id="whatsapp" type="tel" class="form-control" name="whatsapp"
                                     pattern="^[0-9+\\-\\s]{10,15}$" minlength="10" placeholder="e.g. +91 98xxxxxx">
                             </div>
 
-                            <div class="form-group full">
+                            <div class="form-group full hidden-step" data-details-only>
                                 <label for="brief">Describe Your Video</label>
-                                <textarea id="brief" class="form-control" name="brief" required
+                                <textarea id="brief" class="form-control" name="brief"
                                     placeholder="Product kya hai, offer kya hai, kis audience ke liye hai, kis style ka video chahiye..."></textarea>
                                 <p class="helper-copy">Short formula: product + offer + target audience + visual style +
                                     final CTA.</p>
@@ -1051,7 +1153,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group full">
+                            <div class="form-group full hidden-step" data-details-only>
                                 <label for="assets">Upload Assets</label>
                                 <input id="assets" type="file" class="form-control" name="assets" multiple>
                                 <div class="promise-row">
@@ -1081,9 +1183,8 @@
                         </div>
 
                         <div class="submit-card">
-                            <strong>Ready to lock the project?</strong>
-                            <p>Submit ke baad order ID generate hoga, payment verify hone par slot secure ho jayega, aur
-                                tracking page se progress follow kar paoge.</p>
+                            <strong id="submitCardTitle">Ready to lock the project?</strong>
+                            <p id="submitCardDesc">Abhi sirf package select karke payment complete karo. Payment ke baad isi page par details form unlock ho jayega.</p>
                         </div>
 
                         <button type="submit" class="btn btn-primary submit-btn">Pay Now <i
@@ -1097,61 +1198,57 @@
                         <div class="checkpoint">
                             <i class="fas fa-fire"></i>
                             <div>
-                                <strong>Hook-first direction</strong>
-                                <p>Brief ko aise convert kiya jata hai ki first seconds me attention aur intent dono
-                                    build ho.</p>
+                                <strong>Clear creative direction</strong>
+                                <p>Brief ke hisaab se structured video plan ready hota hai.</p>
                             </div>
                         </div>
                         <div class="checkpoint">
                             <i class="fas fa-gem"></i>
                             <div>
-                                <strong>Premium visual polish</strong>
-                                <p>Raw AI look ko typography, pacing aur grading ke saath elevated output me shape kiya
-                                    jata hai.</p>
+                                <strong>Clean final output</strong>
+                                <p>Video ko polished aur ad-ready format me prepare kiya jata hai.</p>
                             </div>
                         </div>
                         <div class="checkpoint">
                             <i class="fas fa-signal"></i>
                             <div>
-                                <strong>Sales-focused CTA ending</strong>
-                                <p>Video sirf pretty nahi hota, usme next action bhi clearly engineered hota hai.</p>
+                                <strong>Simple process</strong>
+                                <p>Payment, details aur tracking sab ek clean flow me rahega.</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="sidebar-card">
-                        <h3>What happens next</h3>
+                        <h3>Next steps</h3>
                         <div class="timeline">
                             <div class="timeline-step">
                                 <div class="timeline-no">01</div>
                                 <div>
-                                    <b>Order ID generate hoga</b>
-                                    <span>Submission ke turant baad tracking reference mil jata hai.</span>
+                                    <b>Order ID milega</b>
+                                    <span>Payment ke baad tracking ke liye order ID mil jayega.</span>
                                 </div>
                             </div>
                             <div class="timeline-step">
                                 <div class="timeline-no">02</div>
                                 <div>
-                                    <b>Payment verify hoga</b>
-                                    <span>Proof clear hone par project queue me slot confirm ho jata hai.</span>
+                                    <b>Details submit hongi</b>
+                                    <span>Brief, WhatsApp aur assets submit karne honge.</span>
                                 </div>
                             </div>
                             <div class="timeline-step">
                                 <div class="timeline-no">03</div>
                                 <div>
-                                    <b>Creative build start hota hai</b>
-                                    <span>Track Order page se New Order, Editing aur Completed status dekh sakte
-                                        ho.</span>
+                                    <b>Tracking start hogi</b>
+                                    <span>Track Order page par live progress aur update time dikhega.</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="sidebar-card">
-                        <h3>Best results ke liye</h3>
-                        <h4>Strong brief = stronger first draft</h4>
-                        <p>Brand tone, desired vibe, price point aur final CTA jitna clear hoga, utni kam revisions
-                            lagenge aur output utna hi polished aayega.</p>
+                        <h3>Helpful tips</h3>
+                        <h4>Short aur clear details do</h4>
+                        <p>Jitna simple aur direct brief hoga, utna fast project start karna easy hoga.</p>
                         <ul class="tip-list" style="margin-top: 14px;">
                             <li>Customer ka pain point ya desire mention karo.</li>
                             <li>Offer ka strongest value point clear rakho.</li>
@@ -1162,6 +1259,21 @@
             </section>
         </div>
     </main>
+
+    <div id="paymentSuccessModal" class="modal-overlay">
+        <div class="success-modal">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2 class="modal-title">Payment Successful!</h2>
+            <p class="modal-desc">Aapki payment receive ho gayi hai. Ab bas apni project details fill kar do taaki team kaam start kar sake.</p>
+            <div class="txn-chip">
+                <span>Order ID</span>
+                <strong id="paidOrderIdText">AV-XXXX</strong>
+            </div>
+            <button class="modal-btn" onclick="closePaymentSuccessModal()">Fill The Form</button>
+        </div>
+    </div>
 
     <footer class="footer">
         <div class="container">
@@ -1218,24 +1330,163 @@
         const form = document.getElementById('orderForm');
         const paymentMethod = document.getElementById('paymentMethod');
         const whatsappInput = document.getElementById('whatsapp');
+        const clientNameInput = document.getElementById('clientName');
+        const briefInput = document.getElementById('brief');
+        const assetsInput = document.getElementById('assets');
         const submitBtn = form.querySelector('.submit-btn');
         const packageChoice = document.getElementById('packageChoice');
         const packageFeatures = document.getElementById('packageFeatures');
+        const detailBlocks = document.querySelectorAll('[data-details-only]');
+        const flowTitle = document.getElementById('flowTitle');
+        const flowDesc = document.getElementById('flowDesc');
+        const flowPill = document.getElementById('flowPill');
+        const flowMeta = document.getElementById('flowMeta');
+        const paymentBanner = document.getElementById('paymentBanner');
+        const successBanner = document.getElementById('successBanner');
+        const errorBanner = document.getElementById('errorBanner');
+        const submitCardTitle = document.getElementById('submitCardTitle');
+        const submitCardDesc = document.getElementById('submitCardDesc');
+        const paymentSuccessModal = document.getElementById('paymentSuccessModal');
+        const paidOrderIdText = document.getElementById('paidOrderIdText');
+        const urlParams = new URLSearchParams(window.location.search);
+        const paidOrderId = urlParams.get('id');
+        const isPaidStep = urlParams.get('paid') === '1' && paidOrderId;
+        const paymentState = urlParams.get('payment');
+
+        function closePaymentSuccessModal() {
+            paymentSuccessModal.classList.remove('active');
+        }
+
+        window.closePaymentSuccessModal = closePaymentSuccessModal;
+
+        function showBanner(type, message) {
+            [paymentBanner, successBanner, errorBanner].forEach((banner) => {
+                banner.classList.remove('active');
+            });
+
+            if (type === 'info') {
+                paymentBanner.textContent = message;
+                paymentBanner.classList.add('active');
+            } else if (type === 'success') {
+                successBanner.textContent = message;
+                successBanner.classList.add('active');
+            } else if (type === 'error') {
+                errorBanner.textContent = message;
+                errorBanner.classList.add('active');
+            }
+        }
 
         function updateFeatures() {
             const selectedOption = packageChoice.options[packageChoice.selectedIndex];
             if (selectedOption && selectedOption.dataset.features) {
                 const features = selectedOption.dataset.features.split(',');
-                packageFeatures.innerHTML = features.map(f => `<span class="helper-tag">${f}</span>`).join('');
+                packageFeatures.innerHTML = features.map((feature) => `<span class="helper-tag">${feature}</span>`).join('');
                 packageFeatures.style.display = 'flex';
             } else {
                 packageFeatures.style.display = 'none';
             }
         }
 
+        function setDetailsMode(enabled) {
+            detailBlocks.forEach((block) => block.classList.toggle('hidden-step', !enabled));
+            packageChoice.disabled = enabled;
+            clientNameInput.required = enabled;
+            whatsappInput.required = enabled;
+            briefInput.required = enabled;
+
+            if (enabled) {
+                flowTitle.innerText = 'Complete Your Project Details';
+                flowDesc.innerText = 'Payment receive ho chuki hai. Ab final delivery ke liye brief, WhatsApp aur assets submit kar do.';
+                flowPill.innerText = 'Step 2: Fill Project Details';
+                flowMeta.innerText = `Payment received for Order ID ${paidOrderId}.`;
+                submitCardTitle.innerText = 'Payment done, ab brief submit karo';
+                submitCardDesc.innerText = 'Details submit hote hi team ko complete project brief mil jayega aur aap tracking page par progress dekh paoge.';
+                submitBtn.innerHTML = 'Submit Project Details <i class="fas fa-arrow-right"></i>';
+                showBanner('success', `Payment successful for ${paidOrderId}. Ab details fill karke order complete kar do.`);
+            } else {
+                flowTitle.innerText = 'Choose Package & Pay';
+                flowDesc.innerText = 'Ab pehle package choose karke payment complete karo. Payment successful hone ke baad isi page par project details form khul jayega.';
+                flowPill.innerText = 'Step 1: Payment First';
+                flowMeta.innerText = 'Payment ke baad hi name, WhatsApp, brief aur assets submit karne honge.';
+                submitCardTitle.innerText = 'Ready to lock the project?';
+                submitCardDesc.innerText = 'Abhi sirf package select karke payment complete karo. Payment ke baad isi page par details form unlock ho jayega.';
+                submitBtn.innerHTML = 'Pay Now <i class="fas fa-credit-card"></i>';
+                showBanner('info', 'Package select karo aur payment complete karo. Details form payment ke baad automatic unlock ho jayega.');
+            }
+        }
+
+        function submitPayuForm(hashData) {
+            const payuForm = document.createElement('form');
+            payuForm.method = 'POST';
+            payuForm.action = 'https://secure.payu.in/_payment';
+
+            const fields = {
+                key: hashData.key,
+                txnid: hashData.txnid,
+                amount: hashData.amount,
+                productinfo: hashData.productinfo,
+                firstname: hashData.firstname,
+                email: hashData.email,
+                phone: hashData.phone,
+                udf1: hashData.udf1,
+                surl: hashData.surl,
+                furl: hashData.furl,
+                hash: hashData.hash,
+                service_provider: 'payu_paisa'
+            };
+
+            Object.entries(fields).forEach(([key, value]) => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = value;
+                payuForm.appendChild(input);
+            });
+
+            document.body.appendChild(payuForm);
+            payuForm.submit();
+        }
+
+        async function preloadPaidOrder() {
+            if (!isPaidStep) {
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_URL}/orders/track/${paidOrderId}`);
+                const data = await res.json();
+                if (!data.success) {
+                    throw new Error(data.message || 'Order not found');
+                }
+
+                const packageName = data.order.packageName;
+                if (packageName) {
+                    const matchingOption = Array.from(packageChoice.options).find((option) => option.value === packageName);
+                    if (matchingOption) {
+                        packageChoice.value = matchingOption.value;
+                        updateFeatures();
+                    }
+                }
+            } catch (error) {
+                showBanner('error', error.message || 'Paid order load nahi ho paya.');
+            }
+        }
+
         packageChoice.addEventListener('change', updateFeatures);
 
-        // Manual payment UI removed
+        setDetailsMode(Boolean(isPaidStep));
+        preloadPaidOrder();
+
+        if (isPaidStep) {
+            paidOrderIdText.innerText = paidOrderId;
+            paymentSuccessModal.classList.add('active');
+        }
+
+        if (!isPaidStep && paymentState === 'failed') {
+            showBanner('error', 'Payment fail ho gayi. Package dobara select karke payment try karo.');
+        } else if (!isPaidStep && paymentState === 'error') {
+            showBanner('error', 'Payment callback me issue aaya. Please dobara try karo.');
+        }
 
         form.onsubmit = async (e) => {
             e.preventDefault();
@@ -1244,94 +1495,84 @@
                 return;
             }
 
-            const cleanedWhatsapp = whatsappInput.value.replace(/[\s-]/g, '');
-            const whatsappPattern = /^[+]?[0-9]{10,15}$/;
-            if (!whatsappPattern.test(cleanedWhatsapp)) {
-                whatsappInput.setCustomValidity('Valid mobile number dalna zaruri hai.');
-                form.reportValidity();
-                return;
-            }
-            whatsappInput.setCustomValidity('');
-            whatsappInput.value = cleanedWhatsapp;
-
-            const formData = new FormData(form);
             const defaultButtonHTML = submitBtn.innerHTML;
-
             submitBtn.disabled = true;
             submitBtn.innerHTML = 'Processing...';
 
             try {
-                // 1. Create order in our system first
-                const res = await fetch(`${API_URL}/orders/create`, {
-                    method: 'POST',
-                    body: formData
-                });
-                const result = await res.json();
-
-                if (!result.success) {
-                    throw new Error(result.message);
+                const selectedPackage = packageChoice.options[packageChoice.selectedIndex];
+                if (!selectedPackage || !selectedPackage.value) {
+                    throw new Error('Package select karo.');
                 }
 
-                if (paymentMethod.value === 'online') {
-                    // 2. If online payment, get PayU hash
-                    const selectedPackage = packageChoice.options[packageChoice.selectedIndex];
-                    const amount = selectedPackage.getAttribute('data-price');
-                    
+                if (!isPaidStep) {
+                    const createRes = await fetch(`${API_URL}/orders/create-payment-order`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            packageName: selectedPackage.value,
+                            packagePrice: selectedPackage.getAttribute('data-price'),
+                            paymentMethod: paymentMethod.value
+                        })
+                    });
+                    const createData = await createRes.json();
+                    if (!createData.success) {
+                        throw new Error(createData.message || 'Payment order create nahi ho paya.');
+                    }
+
                     const hashRes = await fetch(`${API_URL}/payment/create-hash`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            amount: amount,
+                            amount: selectedPackage.getAttribute('data-price'),
                             productinfo: selectedPackage.value,
-                            firstname: document.getElementById('clientName').value,
-                            email: 'customer@manas.com', 
-                            phone: cleanedWhatsapp,
-                            orderId: result.orderId // Pass Order ID to link it
+                            firstname: 'Customer',
+                            email: 'customer@manas.com',
+                            phone: '9999999999',
+                            orderId: createData.orderId
                         })
                     });
                     const hashData = await hashRes.json();
-
-                    if (hashData.success) {
-                        // ... (form submission logic)
-                        const payuForm = document.createElement('form');
-                        payuForm.method = 'POST';
-                        payuForm.action = 'https://secure.payu.in/_payment'; // LIVE URL
-
-                        const fields = {
-                            key: hashData.key,
-                            txnid: hashData.txnid,
-                            amount: hashData.amount,
-                            productinfo: hashData.productinfo,
-                            firstname: hashData.firstname,
-                            email: hashData.email,
-                            phone: hashData.phone,
-                            udf1: hashData.udf1,
-                            surl: hashData.surl,
-                            furl: hashData.furl,
-                            hash: hashData.hash,
-                            service_provider: 'payu_paisa'
-                        };
-
-                        for (const key in fields) {
-                            const input = document.createElement('input');
-                            input.type = 'hidden';
-                            input.name = key;
-                            input.value = fields[key];
-                            payuForm.appendChild(input);
-                        }
-
-                        document.body.appendChild(payuForm);
-                        payuForm.submit();
-                    } else {
-                        alert('Payment Error: ' + (hashData.message || 'Unknown error'));
+                    if (!hashData.success) {
+                        throw new Error(hashData.message || 'Payment hash create nahi ho paya.');
                     }
-                } else {
-                    // Manual payment success
-                    alert(`Order Placed! ID: ${result.orderId}\nQueue: ${result.queueNumber}`);
-                    window.location.href = 'track.html?id=' + result.orderId;
+
+                    submitPayuForm(hashData);
+                    return;
                 }
+
+                const cleanedWhatsapp = whatsappInput.value.replace(/[\s-]/g, '');
+                const whatsappPattern = /^[+]?[0-9]{10,15}$/;
+                if (!whatsappPattern.test(cleanedWhatsapp)) {
+                    whatsappInput.setCustomValidity('Valid mobile number dalna zaruri hai.');
+                    form.reportValidity();
+                    return;
+                }
+
+                whatsappInput.setCustomValidity('');
+                whatsappInput.value = cleanedWhatsapp;
+
+                const formData = new FormData();
+                formData.append('clientName', clientNameInput.value.trim());
+                formData.append('whatsapp', cleanedWhatsapp);
+                formData.append('brief', briefInput.value.trim());
+
+                Array.from(assetsInput.files || []).forEach((file) => {
+                    formData.append('assets', file);
+                });
+
+                const detailRes = await fetch(`${API_URL}/orders/complete/${paidOrderId}`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const detailData = await detailRes.json();
+                if (!detailData.success) {
+                    throw new Error(detailData.message || 'Order details save nahi ho payi.');
+                }
+
+                window.location.href = `track.html?id=${encodeURIComponent(paidOrderId)}`;
             } catch (err) {
-                alert('Error: ' + err.message);
+                showBanner('error', err.message || 'Something went wrong');
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = defaultButtonHTML;

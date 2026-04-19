@@ -65,7 +65,9 @@
             align-items: center;
             gap: 12px;
             text-decoration: none;
+            color: var(--ink);
         }
+        .brand:visited { color: var(--ink); }
         .brand-icon {
             width: 44px;
             height: 44px;
@@ -142,13 +144,13 @@
         }
 
         .track-page {
-            padding: 44px 0 72px;
+            padding: 28px 0 56px;
         }
 
         .track-layout {
             display: grid;
-            grid-template-columns: minmax(0, 0.95fr) minmax(340px, 1.05fr);
-            gap: 22px;
+            grid-template-columns: minmax(280px, 0.78fr) minmax(360px, 1.22fr);
+            gap: 18px;
             align-items: start;
         }
 
@@ -164,29 +166,29 @@
 
         .hero-card,
         .tracker-card {
-            padding: 30px;
+            padding: 24px;
         }
 
         .eyebrow {
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            padding: 10px 15px;
-            margin-bottom: 18px;
+            padding: 8px 13px;
+            margin-bottom: 14px;
             border-radius: 999px;
             background: rgba(255, 107, 44, 0.1);
             color: var(--accent-deep);
-            font-size: 0.82rem;
+            font-size: 0.75rem;
             letter-spacing: 0.08em;
             text-transform: uppercase;
         }
 
         .hero-card h1 {
-            font-size: clamp(2.4rem, 5vw, 4rem);
-            line-height: 0.98;
-            letter-spacing: -0.06em;
-            margin-bottom: 14px;
-            max-width: 10ch;
+            font-size: clamp(1.9rem, 3.2vw, 2.8rem);
+            line-height: 1.08;
+            letter-spacing: -0.05em;
+            margin-bottom: 10px;
+            max-width: 12ch;
         }
 
         .hero-card p,
@@ -194,30 +196,30 @@
         .step p,
         .search-help {
             color: var(--muted);
-            line-height: 1.75;
+            line-height: 1.65;
         }
 
         .stat-row {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 12px;
-            margin-top: 22px;
+            gap: 10px;
+            margin-top: 16px;
         }
 
         .stat-card {
-            padding: 18px;
+            padding: 14px;
         }
 
         .stat-card strong {
             display: block;
-            font-size: 1.35rem;
+            font-size: 1.05rem;
             letter-spacing: -0.05em;
             margin-bottom: 4px;
         }
 
         .stat-card span {
             color: var(--muted);
-            font-size: 0.82rem;
+            font-size: 0.78rem;
         }
 
         .search-box {
@@ -248,9 +250,9 @@
         }
 
         .tracker-card h2 {
-            font-size: 1.65rem;
+            font-size: 1.8rem;
             letter-spacing: -0.05em;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .status-tracker {
@@ -276,6 +278,12 @@
         .result-head p {
             color: var(--muted);
             font-size: 0.9rem;
+        }
+
+        .update-meta {
+            margin-top: 6px;
+            font-size: 0.82rem;
+            color: var(--muted);
         }
 
         .badge {
@@ -340,13 +348,13 @@
         }
 
         .info-card {
-            padding: 24px;
+            padding: 20px;
         }
 
         .info-card h3 {
-            font-size: 1.15rem;
+            font-size: 1rem;
             letter-spacing: -0.04em;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .info-list {
@@ -443,39 +451,10 @@
                 padding: 0 16px;
             }
 
-            .nav-shell,
-            .site-nav,
             .search-box,
             .result-head {
                 flex-direction: column;
                 align-items: flex-start;
-            }
-
-            .brand,
-            .site-nav,
-            .search-box .btn,
-            .header-actions,
-            .header-cta {
-                width: 100%;
-            }
-            .nav-shell {
-                flex-direction: row;
-                flex-wrap: wrap;
-                justify-content: space-between;
-                border-radius: 20px;
-                padding: 12px 18px;
-            }
-            .site-nav {
-                order: 3;
-                padding: 24px 0 10px;
-            }
-
-            .site-nav {
-                gap: 16px;
-            }
-
-            .header-actions {
-                flex-direction: column;
             }
 
             .hero-card,
@@ -486,6 +465,10 @@
 
             .hero-card h1 {
                 max-width: none;
+            }
+
+            .search-box .btn {
+                width: 100%;
             }
 
             .footer-shell,
@@ -620,20 +603,20 @@
                 <div class="info-stack">
                     <div class="hero-card">
                         <div class="eyebrow"><i class="fas fa-satellite-dish"></i> Real-time order visibility</div>
-                        <h1>Apna project status premium dashboard style me dekho.</h1>
-                        <p>Order ID enter karo aur turant dekh lo ki project receive hua hai, editing me hai, ya delivery-ready stage par pahunch chuka hai.</p>
+                        <h1>Apna project status easily track karo.</h1>
+                        <p>Order ID enter karo aur current update, payment status aur project stage turant dekh lo.</p>
                         <div class="stat-row">
                             <div class="stat-card">
                                 <strong>1 ID</strong>
-                                <span>se full project visibility</span>
+                                <span>se pura status check</span>
                             </div>
                             <div class="stat-card">
-                                <strong>Live Flow</strong>
-                                <span>New order se completion tak</span>
+                                <strong>3 Steps</strong>
+                                <span>received se completed tak</span>
                             </div>
                             <div class="stat-card">
-                                <strong>Payment View</strong>
-                                <span>verification badge included</span>
+                                <strong>Payment</strong>
+                                <span>verified ya pending badge</span>
                             </div>
                         </div>
                     </div>
@@ -662,6 +645,7 @@
                             <div>
                                 <h3 id="resName">-</h3>
                                 <p id="resId">-</p>
+                                <div id="resUpdated" class="update-meta">Last updated: --</div>
                             </div>
                             <div id="resPay" class="badge">Payment Pending</div>
                         </div>
@@ -802,10 +786,25 @@
             }
         }
 
+        function formatUpdateTime(value) {
+            if (!value) return 'Last updated: --';
+            const date = new Date(value);
+            if (Number.isNaN(date.getTime())) return 'Last updated: --';
+
+            return `Last updated: ${date.toLocaleString('en-IN', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            })}`;
+        }
+
         function showTrack(order) {
             document.getElementById('trackerBox').style.display = 'block';
             document.getElementById('resName').innerText = order.clientName;
             document.getElementById('resId').innerText = order.orderId;
+            document.getElementById('resUpdated').innerText = formatUpdateTime(order.statusUpdatedAt || order.createdAt);
             document.getElementById('resId').dataset.txnId = order.transactionId || 'N/A'; // Save for modal
 
             const pay = document.getElementById('resPay');

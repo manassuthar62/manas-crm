@@ -13,6 +13,14 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
+async function generateOrderMeta() {
+    const count = await Order.countDocuments();
+    return {
+        orderId: `AV-${1000 + count + 1}`,
+        queueNumber: count + 1
+    };
+}
+
 async function removeUploadedFile(filePath) {
     if (!filePath) return;
 
@@ -31,9 +39,9 @@ router.post('/create', upload.fields([
     { name: 'screenshot', maxCount: 1 }
 ]), async (req, res) => {
     try {
-        const { clientName, whatsapp, brief, paymentMethod, transactionId } = req.body;
+        const { clientName, whatsapp, brief, paymentMethod, transactionId, packageName, packagePrice } = req.body;
         const normalizedWhatsapp = String(whatsapp || '').replace(/[\s-]/g, '');
-        const screenshotPath = req.files['screenshot'] ? req.files['screenshot'][0].path : null;
+        const screenshotPath = req.files?.screenshot ? req.files.screenshot[0].path : null;
 
         if (!clientName || !normalizedWhatsapp || !brief) {
             return res.status(400).json({ success: false, message: 'All fields are required.' });
@@ -44,12 +52,10 @@ router.post('/create', upload.fields([
         }
         
         // Generate Order ID
-        const count = await Order.countDocuments();
-        const orderId = `AV-${1000 + count + 1}`;
-        const queueNumber = count + 1;
+        const { orderId, queueNumber } = await generateOrderMeta();
 
         // Assets and Screenshot paths
-        const assetPaths = req.files['assets'] ? req.files['assets'].map(f => f.path) : [];
+        const assetPaths = req.files?.assets ? req.files.assets.map(f => f.path) : [];
 
         // Calculate ETA
         const eta = calculateETA(new Date());
@@ -61,10 +67,14 @@ router.post('/create', upload.fields([
             whatsapp: normalizedWhatsapp,
             brief,
             assets: assetPaths,
+            packageName: packageName || '',
+            packagePrice: Number(packagePrice) || 0,
+            detailsSubmitted: true,
             paymentMethod,
             transactionId,
             paymentScreenshot: screenshotPath,
-            eta
+            eta,
+            statusUpdatedAt: new Date()
         });
 
         await newOrder.save();
@@ -78,6 +88,90 @@ router.post('/create', upload.fields([
         });
     } catch (error) {
         console.error(error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
+
+router.post('/create-payment-order', async (req, res) => {
+    try {
+        const { packageName, packagePrice, paymentMethod } = req.body;
+
+        if (!packageName || !Number(packagePrice)) {
+            return res.status(400).json({ success: false, message: 'Package select karna zaruri hai.' });
+        }
+
+        const { orderId, queueNumber } = await generateOrderMeta();
+        const eta = calculateETA(new Date());
+
+        const order = new Order({
+            orderId,
+            queueNumber,
+            packageName: String(packageName).trim(),
+            packagePrice: Number(packagePrice) || 0,
+            paymentMethod: paymentMethod || 'online',
+            eta,
+            detailsSubmitted: false,
+            statusUpdatedAt: new Date()
+        });
+
+        await order.save();
+
+        res.status(201).json({
+            success: true,
+            orderId,
+            queueNumber,
+            eta,
+            packageName: order.packageName,
+            packagePrice: order.packagePrice
+        });
+    } catch (error) {
+        console.error('Create payment order error:', error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
+
+router.post('/complete/:id', upload.fields([
+    { name: 'assets', maxCount: 10 }
+]), async (req, res) => {
+    try {
+        const order = await Order.findOne({ orderId: req.params.id });
+        if (!order) {
+            return res.status(404).json({ success: false, message: 'Order not found' });
+        }
+
+        if (order.paymentStatus !== 'verified') {
+            return res.status(400).json({ success: false, message: 'Pehle payment complete honi chahiye.' });
+        }
+
+        const { clientName, whatsapp, brief } = req.body;
+        const normalizedWhatsapp = String(whatsapp || '').replace(/[\s-]/g, '');
+
+        if (!clientName || !normalizedWhatsapp || !brief) {
+            return res.status(400).json({ success: false, message: 'All fields are required.' });
+        }
+
+        if (!/^\+?[0-9]{10,15}$/.test(normalizedWhatsapp)) {
+            return res.status(400).json({ success: false, message: 'Valid WhatsApp number required hai.' });
+        }
+
+        const assetPaths = req.files?.assets ? req.files.assets.map(f => f.path) : [];
+
+        order.clientName = String(clientName).trim();
+        order.whatsapp = normalizedWhatsapp;
+        order.brief = String(brief).trim();
+        order.assets = assetPaths;
+        order.detailsSubmitted = true;
+        order.statusUpdatedAt = new Date();
+
+        await order.save();
+
+        res.json({
+            success: true,
+            message: 'Order details saved successfully',
+            orderId: order.orderId
+        });
+    } catch (error) {
+        console.error('Complete order error:', error);
         res.status(500).json({ success: false, message: 'Internal server error' });
     }
 });
@@ -121,6 +215,9 @@ router.put('/update/:id', async (req, res) => {
         if (typeof status !== 'undefined') updateFields.status = status;
         if (typeof editor !== 'undefined') updateFields.editor = editor || null;
         if (typeof paymentStatus !== 'undefined') updateFields.paymentStatus = paymentStatus;
+        if (typeof status !== 'undefined' || typeof paymentStatus !== 'undefined' || typeof editor !== 'undefined') {
+            updateFields.statusUpdatedAt = new Date();
+        }
 
         if (typeof editorPayout !== 'undefined') {
             const parsedPayout = Number(editorPayout || 0);

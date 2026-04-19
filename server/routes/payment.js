@@ -180,15 +180,15 @@ async function handleSuccessCallback(req, res) {
             }
 
             console.log('Database updated successfully for Order:', updatedOrder.orderId);
-            res.redirect(`${process.env.FRONTEND_URL || ''}/track.html?id=${updatedOrder.orderId}&status=success&txnid=${encodeURIComponent(txnid)}`);
+            res.redirect(`${process.env.FRONTEND_URL || ''}/order.html?id=${updatedOrder.orderId}&paid=1&txnid=${encodeURIComponent(txnid)}`);
         } else {
             console.error('Payment Verification Failed or Status not success');
             const failureOrderId = udf1 ? `id=${encodeURIComponent(udf1)}&` : '';
-            res.redirect(`${process.env.FRONTEND_URL || ''}/track.html?${failureOrderId}status=failed`);
+            res.redirect(`${process.env.FRONTEND_URL || ''}/order.html?${failureOrderId}payment=failed`);
         }
     } catch (error) {
         console.error('Payment success handling error:', error);
-        res.redirect('/track.html?status=error');
+        res.redirect('/order.html?payment=error');
     }
 }
 
@@ -229,7 +229,7 @@ async function handleFailureCallback(req, res) {
     }
 
     const failureOrderId = orderId ? `id=${encodeURIComponent(orderId)}&` : '';
-    res.redirect(`/track.html?${failureOrderId}status=failed`);
+    res.redirect(`/order.html?${failureOrderId}payment=failed`);
 }
 
 // PayU failure callback
