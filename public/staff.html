@@ -721,6 +721,10 @@
                     <i class="fas fa-briefcase"></i>
                     <span>My Active Jobs</span>
                 </button>
+                <button id="sideWithdrawals" class="side-icon" type="button">
+                    <i class="fas fa-wallet"></i>
+                    <span>Withdrawals</span>
+                </button>
                 <button id="refreshBtn" class="side-icon" type="button">
                     <i class="fas fa-rotate-right"></i>
                     <span>Refresh Jobs</span>
@@ -799,6 +803,39 @@
                     </div>
                 </div>
             </section>
+
+            <section id="withdrawalView" class="workspace-card" style="display: none;">
+                <div class="workspace-header">
+                    <div>
+                        <h3>Payout Requests</h3>
+                        <p>Earnings from completed projects ko yahan se withdraw karein.</p>
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 24px;">
+                    <div class="summary-card" style="background: linear-gradient(135deg, #eff6ff, #ffffff); border-color: #dbeafe;">
+                        <div class="summary-label">Available Balance</div>
+                        <div id="availableBalance" class="summary-value" style="color: var(--staff-primary);">Rs 0</div>
+                        <div class="summary-meta">Completed orders only</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-label">Pending / Approved</div>
+                        <div id="withdrawalStats" class="summary-value" style="font-size: 1.2rem; margin-top: 24px;">0 / 0</div>
+                        <div class="summary-meta" id="withdrawalWaitInfo">Payout status summary</div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 24px;">
+                    <button id="openWithdrawalModal" class="btn btn-primary" style="width: 100%;">
+                        <i class="fas fa-paper-plane"></i> Request Payout
+                    </button>
+                </div>
+
+                <h4>Request History</h4>
+                <div id="withdrawalHistory" class="job-list">
+                    <!-- History items will appear here -->
+                </div>
+            </section>
         </main>
     </div>
 
@@ -806,14 +843,49 @@
         <div class="modal-card">
             <div class="modal-header">
                 <div>
-                    <h2 id="modalTitle">Project Details</h2>
-                    <p id="modalSubtitle">Review project brief and update the current stage.</p>
+                    <h2 id="modalTitle">Workspace Details</h2>
+                    <p id="modalSubtitle">Review details and update progress</p>
                 </div>
                 <button class="close-btn" type="button" onclick="closeModal()">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <div id="modalContent"></div>
+            <div id="modalContent">
+                <div style="text-align:center; padding: 40px; color: var(--staff-muted);">
+                    <i class="fas fa-spinner fa-spin"></i> Loading...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="withdrawalModal" class="modal-shell">
+        <div class="modal-card" style="max-width: 480px;">
+            <div class="modal-header">
+                <div>
+                    <h2>Request Payout</h2>
+                    <p>Enter the amount and your payment details.</p>
+                </div>
+                <button class="close-btn" type="button" onclick="closeWithdrawalModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="withdrawalForm">
+                <div class="field">
+                    <label>Amount (Rs)</label>
+                    <input type="number" id="withdrawAmount" class="field-value" style="width: 100%;" required min="1">
+                    <small id="maxWithdrawHelp" class="helper-text">Max: Rs 0</small>
+                </div>
+                <div class="field">
+                    <label>Payment Details (UPI ID / Bank)</label>
+                    <textarea id="withdrawDetails" class="field-value" style="width: 100%; height: 80px; resize: none;" placeholder="Enter UPI ID or Bank Account Details" required></textarea>
+                </div>
+                <div class="footer-actions">
+                    <button class="btn btn-secondary" type="button" onclick="closeWithdrawalModal()">Cancel</button>
+                    <button id="submitWithdrawalBtn" class="btn btn-primary" type="submit">
+                        <i class="fas fa-check"></i> Submit Request
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -984,12 +1056,16 @@
             document.getElementById('modalTitle').innerText = `${job.clientName} Workspace`;
             document.getElementById('modalSubtitle').innerText = `${job.orderId} • Update current progress from here`;
             const assetsMarkup = (job.assets && job.assets.length)
-                ? job.assets.map(asset => `
-                    <a href="/${asset.replace(/\\/g, '/')}" target="_blank" class="asset-link">
-                        <i class="fas fa-paperclip"></i>
-                        <span>${asset.split(/[\\/]/).pop()}</span>
-                    </a>
-                `).join('')
+                ? job.assets.map(asset => {
+                    const cleanPath = asset.replace(/\\/g, '/');
+                    const url = cleanPath.startsWith('uploads/') ? `/${cleanPath}` : `/uploads/${cleanPath}`;
+                    return `
+                        <a href="${url}" target="_blank" class="asset-link">
+                            <i class="fas fa-paperclip"></i>
+                            <span>${asset.split(/[\\/]/).pop()}</span>
+                        </a>
+                    `;
+                }).join('')
                 : `<div class="field-value">No assets uploaded</div>`;
 
             document.getElementById('modalContent').innerHTML = `
@@ -1012,14 +1088,6 @@
                             <div class="field">
                                 <label>Editor Payout</label>
                                 <div class="field-value">${formatCurrency(job.editorPayout || 0)}</div>
-                            </div>
-                            <div class="field">
-                                <label>Payment Status</label>
-                                <div class="field-value">${job.paymentStatus === 'verified' ? 'Approved' : 'Pending Approval'}</div>
-                            </div>
-                            <div class="field">
-                                <label>Received Payment</label>
-                                <div class="field-value">${formatCurrency(job.paymentAmount || 0)}</div>
                             </div>
                         </div>
                     </div>
@@ -1104,16 +1172,166 @@
             document.getElementById('detailsModal').style.display = 'none';
         }
 
+        // Withdrawal Logic
+        const sideWithdrawals = document.getElementById('sideWithdrawals');
+        const sideJobs = document.querySelector('.side-icon.active');
+        const withdrawalView = document.getElementById('withdrawalView');
+        const summaryGrid = document.querySelector('.summary-grid');
+        const workspaceCard = document.querySelector('.workspace-card'); // Active Jobs section
+        const withdrawalModal = document.getElementById('withdrawalModal');
+        const withdrawalForm = document.getElementById('withdrawalForm');
+
+        function showJobsView() {
+            sideWithdrawals.classList.remove('active');
+            sideJobs.classList.add('active');
+            summaryGrid.style.display = 'grid';
+            workspaceCard.style.display = 'block';
+            withdrawalView.style.display = 'none';
+        }
+
+        function showWithdrawalView() {
+            sideJobs.classList.remove('active');
+            sideWithdrawals.classList.add('active');
+            summaryGrid.style.display = 'none';
+            workspaceCard.style.display = 'none';
+            withdrawalView.style.display = 'block';
+            fetchWithdrawalData();
+        }
+
+        sideJobs.onclick = () => {
+            closeSidebar();
+            showJobsView();
+        };
+
+        sideWithdrawals.onclick = () => {
+            closeSidebar();
+            showWithdrawalView();
+        };
+
+        async function fetchWithdrawalData() {
+            try {
+                // Fetch Balance
+                const balRes = await fetch(`${API_BASE}/withdrawal/balance`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const balData = await balRes.json();
+                if (balData.success) {
+                    document.getElementById('availableBalance').innerText = formatCurrency(balData.availableBalance);
+                    document.getElementById('withdrawalStats').innerText = `${formatCurrency(balData.pendingAmount)} / ${formatCurrency(balData.approvedAmount)}`;
+                    document.getElementById('maxWithdrawHelp').innerText = `Max Available: ${formatCurrency(balData.availableBalance)}`;
+                    document.getElementById('withdrawAmount').max = balData.availableBalance;
+                }
+
+                // Fetch History
+                const histRes = await fetch(`${API_BASE}/withdrawal/my`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const histData = await histRes.json();
+                if (histData.success) {
+                    renderWithdrawalHistory(histData.history);
+                }
+            } catch (err) {
+                console.error('Withdrawal fetch error:', err);
+            }
+        }
+
+        function renderWithdrawalHistory(history) {
+            const container = document.getElementById('withdrawalHistory');
+            if (!history.length) {
+                container.innerHTML = '<div class="empty-state">No withdrawal requests yet.</div>';
+                return;
+            }
+
+            container.innerHTML = history.map(req => `
+                <div class="job-card" style="grid-template-columns: 1fr 1fr auto;">
+                    <div>
+                        <div class="job-title">${formatCurrency(req.amount)}</div>
+                        <div class="job-subtext">${new Date(req.createdAt).toLocaleDateString()} • ID: ${req._id.slice(-6).toUpperCase()}</div>
+                    </div>
+                    <div>
+                        <span class="job-label">Status</span>
+                        <span class="status-badge ${getStatusBadgeClass(req.status)}">${req.status.toUpperCase()}</span>
+                        ${req.transactionId ? `<div style="font-size: 0.7rem; color: #10b981; margin-top: 4px; font-weight: 700;">TXID: ${req.transactionId}</div>` : ''}
+                    </div>
+                    <div style="font-size: 0.82rem; color: var(--staff-muted); text-align: right; max-width: 150px;">
+                        ${req.adminNote ? `Note: ${req.adminNote}` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getStatusBadgeClass(status) {
+            if (status === 'approved') return 'status-completed';
+            if (status === 'rejected') return 'status-correction';
+            return 'status-delivery'; // Pending
+        }
+
+        document.getElementById('openWithdrawalModal').onclick = () => {
+            withdrawalModal.style.display = 'flex';
+        };
+
+        function closeWithdrawalModal() {
+            withdrawalModal.style.display = 'none';
+        }
+
+        withdrawalForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitWithdrawalBtn');
+            const amount = document.getElementById('withdrawAmount').value;
+            const paymentDetails = document.getElementById('withdrawDetails').value;
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+
+            try {
+                const res = await fetch(`${API_BASE}/withdrawal/request`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({ amount, paymentDetails })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('Withdrawal request submitted successfully!');
+                    withdrawalForm.reset();
+                    closeWithdrawalModal();
+                    fetchWithdrawalData();
+                } else {
+                    alert(data.message || 'Submission failed');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('An error occurred');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-check"></i> Submit Request';
+            }
+        };
+
+        window.closeWithdrawalModal = closeWithdrawalModal;
+
         document.getElementById('jobSearch').addEventListener('input', applySearch);
         document.getElementById('refreshBtn').onclick = () => {
             closeSidebar();
             fetchMyJobs();
+            if (withdrawalView.style.display === 'block') fetchWithdrawalData();
         };
-        document.getElementById('refreshTopBtn').onclick = fetchMyJobs;
+        document.getElementById('refreshTopBtn').onclick = () => {
+            fetchMyJobs();
+            if (withdrawalView.style.display === 'block') fetchWithdrawalData();
+        };
 
         document.getElementById('detailsModal').addEventListener('click', (event) => {
             if (event.target.id === 'detailsModal') {
                 closeModal();
+            }
+        });
+
+        document.getElementById('withdrawalModal').addEventListener('click', (event) => {
+            if (event.target.id === 'withdrawalModal') {
+                closeWithdrawalModal();
             }
         });
 

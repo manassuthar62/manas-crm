@@ -1274,6 +1274,24 @@
             .pill { padding: 8px 12px; font-size: 0.8rem; }
             .bar-search { width: 100%; }
         }
+        .notification-badge {
+            background: #ef4444;
+            color: #ffffff;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: auto;
+            display: none;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+            animation: pulse-badge 2s infinite;
+        }
+
+        @keyframes pulse-badge {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
     </style>
 </head>
 <body>
@@ -1310,7 +1328,12 @@
                 <a href="#" id="sideDash" class="side-icon active"><i class="fas fa-th-large"></i><span>Overview</span></a>
                 <a href="#" id="sideOrders" class="side-icon"><i class="fas fa-file-invoice"></i><span>Orders</span></a>
                 <a href="#" id="sideTeam" class="side-icon"><i class="fas fa-users"></i><span>Team</span></a>
-                <a href="#" class="side-icon"><i class="fas fa-bell"></i><span>Alerts</span></a>
+                <a href="#" id="sideWithdrawals" class="side-icon"><i class="fas fa-wallet"></i><span>Withdrawals</span></a>
+                <a href="#" id="sideAlerts" class="side-icon">
+                    <i class="fas fa-bell"></i>
+                    <span>Alerts</span>
+                    <span id="alertBadge" class="notification-badge">0</span>
+                </a>
                 <a href="#" id="sideSettings" class="side-icon"><i class="fas fa-cog"></i><span>Settings</span></a>
             </nav>
             <div style="margin-top: auto;">
@@ -1780,8 +1803,86 @@
                             </div>
                         </div>
                     </div>
+
+                </div>
+
+                <!-- Withdrawal Management View -->
+                <!-- Alerts Management View -->
+                <div id="alertsManagement" class="dashboard-view" style="display: none;">
+                    <div class="page-intro">
+                        <div>
+                            <span class="eyebrow" style="color: #ef4444;">Action Required</span>
+                            <h1>Pending Alerts</h1>
+                            <p>Verify new orders and approve withdrawal requests from here.</p>
+                        </div>
+                        <button class="btn" onclick="clearAllAlerts()" style="background: #f8fafc; border: 1px solid var(--border); color: var(--text-muted); padding: 8px 16px; font-size: 0.8rem;">
+                            <i class="fas fa-trash-can" style="margin-right: 6px;"></i> Clear All
+                        </button>
+                    </div>
+
+                    <div id="alertItems" class="job-list">
+                        <!-- Alert items will be injected here -->
+                    </div>
+                </div>
+
+                <div id="withdrawalManagement" class="dashboard-view" style="display: none;">
+                    <div class="page-intro">
+                        <div>
+                            <span class="eyebrow">Payout processing</span>
+                            <h1>Withdrawal Requests</h1>
+                            <p>Manage editor payout requests. Approve after verifying payment transfers.</p>
+                        </div>
+                    </div>
+
+                    <div id="withdrawalList" class="workspace-card">
+                        <div class="list-header" style="grid-template-columns: 1.5fr 1fr 1fr 1.5fr auto;">
+                            <span>Editor</span>
+                            <span>Amount</span>
+                            <span>Status</span>
+                            <span>Details</span>
+                            <span>Actions</span>
+                        </div>
+                        <div id="withdrawalItems" class="job-list">
+                            <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+                                <i class="fas fa-spinner fa-spin"></i> Loading requests...
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </main>
+        </div>
+    </div>
+
+    <!-- Withdrawal Action Modal -->
+    <div id="withdrawalActionModal" class="modal-overlay">
+        <div class="modal-card" style="max-width: 450px;">
+            <div class="modal-head">
+                <div>
+                    <h3 id="wActionTitle">Approve Request</h3>
+                    <p id="wActionSubtitle">Enter transfer details to complete.</p>
+                </div>
+                <button class="close-btn" onclick="closeWithdrawalActionModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" style="padding: 20px;">
+                <input type="hidden" id="wActionRequestId">
+                <input type="hidden" id="wActionStatus">
+                
+                <div id="wActionTxidGroup" class="info-group">
+                    <label class="info-label">Transaction ID / Reference</label>
+                    <input type="text" id="wActionTxid" class="select-input" style="width: 100%; height: 40px;" placeholder="e.g. T23041900123">
+                </div>
+                
+                <div class="info-group">
+                    <label class="info-label">Admin Note (For Editor)</label>
+                    <textarea id="wActionNote" class="select-input" style="width: 100%; height: 80px; padding: 10px; resize: none;" placeholder="Optional message for the editor..."></textarea>
+                </div>
+                
+                <button id="wActionConfirmBtn" onclick="submitWithdrawalAction()" class="btn btn-primary" style="width: 100%; justify-content: center; height: 45px; margin-top: 10px;">
+                    Confirm Action
+                </button>
+            </div>
         </div>
     </div>
 
@@ -1836,6 +1937,7 @@
         const teamOverview = document.getElementById('teamOverview');
         const editorDetailView = document.getElementById('editorDetailView');
         const credentialsOverview = document.getElementById('credentialsOverview');
+        const withdrawalManagement = document.getElementById('withdrawalManagement');
         const pipelineControls = document.querySelector('.pipeline-controls');
         const contentHeader = document.querySelector('.content-header');
         const menuToggle = document.getElementById('menuToggle');
@@ -1931,14 +2033,24 @@
         // Toggle Views
 
         function hideAllViews() {
-            pipelineList.style.display = 'none';
-            orderDetail.style.display = 'none';
-            dashboardOverview.style.display = 'none';
-            teamOverview.style.display = 'none';
-            editorDetailView.style.display = 'none';
-            credentialsOverview.style.display = 'none';
-            pipelineControls.style.display = 'none';
-            contentHeader.style.display = 'none';
+            const views = [
+                pipelineList, 
+                orderDetail, 
+                dashboardOverview, 
+                teamOverview, 
+                editorDetailView, 
+                credentialsOverview, 
+                withdrawalManagement,
+                document.getElementById('alertsManagement'),
+                pipelineControls, 
+                contentHeader
+            ];
+            
+            views.forEach(v => {
+                if (v && v.style) {
+                    v.style.display = 'none';
+                }
+            });
             
             document.querySelectorAll('.side-icon').forEach(i => i.classList.remove('active'));
         }
@@ -1970,6 +2082,16 @@
             closeSidebar();
         };
 
+        const sideWithdrawals = document.getElementById('sideWithdrawals');
+        sideWithdrawals.onclick = (e) => {
+            e.preventDefault();
+            hideAllViews();
+            withdrawalManagement.style.display = 'block';
+            sideWithdrawals.classList.add('active');
+            closeSidebar();
+            fetchWithdrawalRequests();
+        };
+
         sideSettings.onclick = (e) => {
             e.preventDefault();
             hideAllViews();
@@ -1977,6 +2099,16 @@
             sideSettings.classList.add('active');
             populateCredentialsForm();
             closeSidebar();
+        };
+
+        const sideAlerts = document.getElementById('sideAlerts');
+        sideAlerts.onclick = (e) => {
+            e.preventDefault();
+            hideAllViews();
+            document.getElementById('alertsManagement').style.display = 'block';
+            sideAlerts.classList.add('active');
+            closeSidebar();
+            fetchAlerts();
         };
 
         let currentOrderId = null;
@@ -2829,6 +2961,285 @@
                 closeAddEditorModal();
             }
         });
+
+        // Alerts Management Logic
+        let dismissedAlerts = JSON.parse(localStorage.getItem('dismissedAlerts') || '[]');
+
+        async function fetchAlerts() {
+            const container = document.getElementById('alertItems');
+            const badge = document.getElementById('alertBadge');
+            
+            try {
+                const [ordersRes, withdrawalsRes] = await Promise.all([
+                    fetch(`${API_BASE}/orders/all`),
+                    fetch(`${API_BASE}/withdrawal/all`, {
+                        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                    })
+                ]);
+                
+                const ordersData = await ordersRes.json();
+                const withdrawalsData = await withdrawalsRes.json();
+                
+                let alerts = [];
+                
+                if (ordersData.orders) {
+                    const pendingOrders = ordersData.orders.filter(o => o.paymentStatus === 'pending');
+                    pendingOrders.forEach(o => {
+                        if (!dismissedAlerts.includes(o._id)) {
+                            alerts.push({
+                                type: 'order',
+                                id: o._id,
+                                title: `New Order: ${o.clientName}`,
+                                subtitle: `${o.orderId} • ${formatCurrency(o.amount)}`,
+                                time: new Date(o.createdAt)
+                            });
+                        }
+                    });
+                }
+                
+                if (withdrawalsData.requests) {
+                    const pendingWithdrawals = withdrawalsData.requests.filter(w => w.status === 'pending');
+                    pendingWithdrawals.forEach(w => {
+                        if (!dismissedAlerts.includes(w._id)) {
+                            alerts.push({
+                                type: 'withdrawal',
+                                id: w._id,
+                                title: `Payout Request: ${w.editorId?.name || 'Editor'}`,
+                                subtitle: `${formatCurrency(w.amount)} • UPI: ${w.paymentDetails}`,
+                                time: new Date(w.createdAt)
+                            });
+                        }
+                    });
+                }
+                
+                alerts.sort((a, b) => b.time - a.time);
+                
+                if (alerts.length > 0) {
+                    badge.innerText = alerts.length;
+                    badge.style.display = 'block';
+                } else {
+                    badge.style.display = 'none';
+                }
+                
+                if (container) renderAlerts(alerts);
+                
+            } catch (err) {
+                console.error('Alerts failed:', err);
+            }
+        }
+
+        function renderAlerts(alerts) {
+            const container = document.getElementById('alertItems');
+            if (!alerts.length) {
+                container.innerHTML = '<div style="text-align: center; padding: 60px; color: var(--text-muted);"><h3>All clear!</h3><p>No new notifications.</p></div>';
+                return;
+            }
+
+            container.innerHTML = alerts.map(alert => `
+                <div class="pipeline-card" style="grid-template-columns: auto 1fr auto; align-items: center; border-left: 4px solid ${alert.type === 'order' ? '#3b82f6' : '#ef4444'};">
+                    <div style="background: ${alert.type === 'order' ? '#dbeafe' : '#fee2e2'}; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: ${alert.type === 'order' ? '#3b82f6' : '#ef4444'};">
+                        <i class="fas ${alert.type === 'order' ? 'fa-shopping-cart' : 'fa-wallet'}"></i>
+                    </div>
+                    <div style="padding: 0 15px;">
+                        <div class="val">${alert.title}</div>
+                        <div class="sub-val">${alert.subtitle}</div>
+                    </div>
+                    <div>
+                        <button class="close-btn" onclick="dismissAlert('${alert.id}')" style="width: 32px; height: 32px; border: none; background: transparent; color: var(--text-muted);">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function dismissAlert(id) {
+            if (!dismissedAlerts.includes(id)) {
+                dismissedAlerts.push(id);
+                localStorage.setItem('dismissedAlerts', JSON.stringify(dismissedAlerts));
+                fetchAlerts();
+            }
+        }
+
+        function clearAllAlerts() {
+            // Get all current alert IDs and add to dismissed
+            const items = document.querySelectorAll('[onclick^="dismissAlert"]');
+            items.forEach(btn => {
+                const id = btn.getAttribute('onclick').match(/'([^']+)'/)[1];
+                if (!dismissedAlerts.includes(id)) dismissedAlerts.push(id);
+            });
+            localStorage.setItem('dismissedAlerts', JSON.stringify(dismissedAlerts));
+            fetchAlerts();
+        }
+
+        function formatDistance(date) {
+            const now = new Date();
+            const diff = Math.floor((now - date) / 60000); // mins
+            if (diff < 1) return 'Just now';
+            if (diff < 60) return `${diff}m`;
+            const hours = Math.floor(diff / 60);
+            if (hours < 24) return `${hours}h`;
+            return `${Math.floor(hours / 24)}d`;
+        }
+
+        function goToAlertAction(type, id) {
+            hideAllViews();
+            if (type === 'order') {
+                setActiveLink('sideOrders');
+                document.getElementById('orderManagement').style.display = 'block';
+                openOrderDetail(id);
+            } else {
+                setActiveLink('sideWithdrawals');
+                document.getElementById('withdrawalManagement').style.display = 'block';
+                fetchWithdrawalRequests();
+            }
+        }
+
+        // Initialize Alerts on load and every minute
+        fetchAlerts();
+        setInterval(fetchAlerts, 60000);
+
+        // Withdrawal Management Logic
+        let activeWithdrawalId = null;
+        let activeWithdrawalStatus = null;
+
+        async function fetchWithdrawalRequests() {
+            const container = document.getElementById('withdrawalItems');
+            container.innerHTML = '<div style="text-align: center; padding: 40px;"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+
+            try {
+                const res = await fetch(`${API_BASE}/withdrawal/all`, {
+                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                });
+                const data = await res.json();
+                if (data.success) {
+                    renderWithdrawalRequests(data.requests);
+                } else {
+                    container.innerHTML = `<div style="text-align: center; padding: 40px; color: #ef4444;">${data.message}</div>`;
+                }
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = '<div style="text-align: center; padding: 40px; color: #ef4444;">Fetch failed.</div>';
+            }
+        }
+
+        function renderWithdrawalRequests(requests) {
+            const container = document.getElementById('withdrawalItems');
+            if (!requests.length) {
+                container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-muted);">No withdrawal requests found.</div>';
+                return;
+            }
+
+            container.innerHTML = requests.map(req => `
+                <div class="pipeline-card" style="grid-template-columns: 1.5fr 1fr 1fr 2fr auto; align-items: center; padding: 15px;">
+                    <div>
+                        <div class="val">${req.editorId?.name || 'Unknown'}</div>
+                        <div class="sub-val">${req.editorId?.email || 'N/A'}</div>
+                    </div>
+                    <div class="val" style="color: var(--secondary); font-weight: 700;">${formatCurrency(req.amount)}</div>
+                    <div>
+                        <span class="status-badge-static" style="${getStatusStyle(req.status)}">${req.status.toUpperCase()}</span>
+                    </div>
+                    <div style="background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+                        <div style="font-size: 0.65rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">Transfer To:</div>
+                        <div style="font-size: 0.85rem; color: var(--text-main); font-weight: 600; word-break: break-all;">${req.paymentDetails}</div>
+                        ${req.transactionId ? `<div style="font-size: 0.75rem; color: #10b981; margin-top: 5px; font-weight: 600;">TXID: ${req.transactionId}</div>` : ''}
+                    </div>
+                    <div class="row-actions">
+                        ${req.status === 'pending' ? `
+                            <button class="btn-review" onclick="openWithdrawalActionModal('${req._id}', 'approved')" style="border-color: #10b981; color: #10b981; background: #ecfdf5; font-size: 0.75rem;">APPROVE</button>
+                            <button class="btn-review" onclick="openWithdrawalActionModal('${req._id}', 'rejected')" style="border-color: #ef4444; color: #ef4444; background: #fef2f2; font-size: 0.75rem;">REJECT</button>
+                        ` : `
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">${new Date(req.createdAt).toLocaleDateString()}</span>
+                        `}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getStatusStyle(status) {
+            if (status === 'approved') return 'background: #ecfdf5; color: #10b981; border-color: #d1fae5;';
+            if (status === 'rejected') return 'background: #fef2f2; color: #ef4444; border-color: #fee2e2;';
+            return 'background: #eff6ff; color: #2563eb; border-color: #dbeafe;';
+        }
+
+        function openWithdrawalActionModal(id, status) {
+            activeWithdrawalId = id;
+            activeWithdrawalStatus = status;
+            
+            document.getElementById('wActionRequestId').value = id;
+            document.getElementById('wActionStatus').value = status;
+            document.getElementById('wActionNote').value = status === 'approved' ? 'Payment processed successfully.' : '';
+            document.getElementById('wActionTxid').value = '';
+            
+            const title = document.getElementById('wActionTitle');
+            const sub = document.getElementById('wActionSubtitle');
+            const txGroup = document.getElementById('wActionTxidGroup');
+            
+            if (status === 'approved') {
+                title.innerText = 'Approve Request';
+                title.style.color = '#10b981';
+                sub.innerText = 'Enter transfer details to complete.';
+                txGroup.style.display = 'block';
+            } else {
+                title.innerText = 'Reject Request';
+                title.style.color = '#ef4444';
+                sub.innerText = 'Explain why this request is being rejected.';
+                txGroup.style.display = 'none';
+            }
+            
+            document.getElementById('withdrawalActionModal').style.display = 'flex';
+        }
+
+        function closeWithdrawalActionModal() {
+            document.getElementById('withdrawalActionModal').style.display = 'none';
+        }
+
+        async function submitWithdrawalAction() {
+            const id = document.getElementById('wActionRequestId').value;
+            const status = document.getElementById('wActionStatus').value;
+            const transactionId = document.getElementById('wActionTxid').value;
+            const adminNote = document.getElementById('wActionNote').value;
+            const btn = document.getElementById('wActionConfirmBtn');
+
+            if (status === 'approved' && !transactionId) {
+                alert('Please enter a Transaction ID before approving.');
+                return;
+            }
+
+            if (status === 'rejected' && !adminNote) {
+                alert('Please enter a reason for rejection.');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+            try {
+                const res = await fetch(`${API_BASE}/withdrawal/update/${id}`, {
+                    method: 'PUT',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({ status, adminNote, transactionId })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    closeWithdrawalActionModal();
+                    fetchWithdrawalRequests();
+                    fetchTeam();
+                } else {
+                    alert(data.message);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('An error occurred');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Confirm Action';
+            }
+        }
 
         // On Load
         window.onload = () => {

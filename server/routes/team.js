@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const Order = require('../models/Order');
+const Withdrawal = require('../models/Withdrawal');
 const bcrypt = require('bcryptjs');
 
 // GET: All Editors/Staff
@@ -14,6 +15,9 @@ router.get('/all', async (req, res) => {
             const activeJobs = await Order.countDocuments({ editor: user._id, status: { $ne: 'Completed' } });
             const orders = await Order.find({ editor: user._id });
             const totalEarned = orders.reduce((sum, o) => sum + (o.editorPayout || 0), 0);
+            
+            const approvedWithdrawals = await Withdrawal.find({ editorId: user._id, status: 'approved' });
+            const totalWithdrawn = approvedWithdrawals.reduce((sum, w) => sum + w.amount, 0);
 
             return {
                 id: user._id,
@@ -21,6 +25,8 @@ router.get('/all', async (req, res) => {
                 role: user.role,
                 activeJobs,
                 totalEarned,
+                balance: totalEarned - totalWithdrawn,
+                totalWithdrawn,
                 isAvailable: user.isAvailable
             };
         }));
@@ -46,6 +52,9 @@ router.get('/:id', async (req, res) => {
         const activeJobs = assignedOrders.filter(order => order.status !== 'Completed').length;
         const totalEarned = assignedOrders.reduce((sum, order) => sum + (order.editorPayout || 0), 0);
 
+        const approvedWithdrawals = await Withdrawal.find({ editorId: user._id, status: 'approved' });
+        const totalWithdrawn = approvedWithdrawals.reduce((sum, w) => sum + w.amount, 0);
+
         res.json({
             success: true,
             member: {
@@ -57,6 +66,8 @@ router.get('/:id', async (req, res) => {
                 createdAt: user.createdAt,
                 activeJobs,
                 totalEarned,
+                totalWithdrawn,
+                balance: totalEarned - totalWithdrawn,
                 assignedOrders
             }
         });
