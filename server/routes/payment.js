@@ -113,8 +113,8 @@ router.post('/create-hash', async (req, res) => {
             email,
             phone,
             udf1: orderId, // Crucial for redirection
-            surl: `${req.protocol}://${req.get('host')}/api/payment/success`,
-            furl: `${req.protocol}://${req.get('host')}/api/payment/failure`
+            surl: `${req.protocol === 'https' || !req.get('host').includes('localhost') ? 'https' : 'http'}://${req.get('host')}/api/payment/success`,
+            furl: `${req.protocol === 'https' || !req.get('host').includes('localhost') ? 'https' : 'http'}://${req.get('host')}/api/payment/failure`
         });
     } catch (error) {
         console.error('CRITICAL HASH ERROR:', error.stack);
