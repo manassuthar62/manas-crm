@@ -1057,13 +1057,18 @@
             document.getElementById('modalSubtitle').innerText = `${job.orderId} • Update current progress from here`;
             const assetsMarkup = (job.assets && job.assets.length)
                 ? job.assets.map(asset => {
-                    const cleanPath = asset.replace(/\\/g, '/');
-                    const url = cleanPath.startsWith('uploads/') ? `/${cleanPath}` : `/uploads/${cleanPath}`;
+                    const fileName = asset.split(/[\\/]/).pop();
+                    const url = `/uploads/${encodeURIComponent(fileName)}`;
                     return `
-                        <a href="${url}" target="_blank" class="asset-link">
-                            <i class="fas fa-paperclip"></i>
-                            <span>${asset.split(/[\\/]/).pop()}</span>
-                        </a>
+                        <div style="display: flex; border: 1px solid var(--staff-border); border-radius: 14px; overflow: hidden; background: #ffffff; margin-bottom: 10px;">
+                            <a href="${url}" target="_blank" class="asset-link" style="flex-grow: 1; border: none; border-radius: 0; border-right: 1px solid var(--staff-border); margin-bottom: 0;" title="View File">
+                                <i class="fas fa-paperclip"></i>
+                                <span>${fileName}</span>
+                            </a>
+                            <a href="${url}" download="${fileName}" class="asset-link" style="border: none; border-radius: 0; padding: 12px 18px; margin-bottom: 0;" title="Download Directly">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </div>
                     `;
                 }).join('')
                 : `<div class="field-value">No assets uploaded</div>`;

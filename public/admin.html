@@ -2196,15 +2196,27 @@
                     // Media
                     const assetContainer = document.getElementById('detAssets');
                     if (order.assets && order.assets.length > 0) {
-                        assetContainer.innerHTML = order.assets.map(a => `
-                            <a href="/${a}" target="_blank" class="asset-tag"><i class="far fa-file"></i> ${a.split('\\').pop()}</a>
-                        `).join('');
+                        assetContainer.innerHTML = order.assets.map(a => {
+                            const fileName = a.split(/[\\/]/).pop();
+                            const downloadUrl = `/uploads/${encodeURIComponent(fileName)}`;
+                            return `
+                                <div style="display: inline-flex; border: 1px solid rgba(37, 99, 235, 0.1); border-radius: 6px; overflow: hidden; margin-right: 8px; margin-bottom: 8px;">
+                                    <a href="${downloadUrl}" target="_blank" style="display: flex; align-items: center; gap: 6px; padding: 6px 10px; background: #eff6ff; color: var(--primary); text-decoration: none; font-size: 0.8rem; border-right: 1px solid rgba(37, 99, 235, 0.1);" title="View File">
+                                        <i class="far fa-file"></i> ${fileName}
+                                    </a>
+                                    <a href="${downloadUrl}" download="${fileName}" style="display: flex; align-items: center; padding: 6px 10px; background: #eff6ff; color: var(--primary); text-decoration: none; font-size: 0.8rem;" title="Download Directly">
+                                        <i class="fas fa-download"></i>
+                                    </a>
+                                </div>
+                            `;
+                        }).join('');
                     } else {
                         assetContainer.innerHTML = '<span style="color: var(--text-muted); font-size: 0.8rem;">No assets uploaded</span>';
                     }
 
                     if (order.paymentScreenshot) {
-                        document.getElementById('detScreenshot').src = `/${order.paymentScreenshot}`;
+                        const screenshotName = order.paymentScreenshot.split(/[\\/]/).pop();
+                        document.getElementById('detScreenshot').src = `/uploads/${encodeURIComponent(screenshotName)}`;
                     } else {
                         document.getElementById('detScreenshot').src = 'https://via.placeholder.com/400x250?text=No+Screenshot';
                     }

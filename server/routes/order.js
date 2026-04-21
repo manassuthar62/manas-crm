@@ -8,7 +8,10 @@ const { calculateETA } = require('../utils/etaHelper');
 
 // File upload config
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, path.resolve(__dirname, '../../uploads/')),
+    destination: (req, file, cb) => {
+        const dest = path.join(process.cwd(), 'uploads');
+        cb(null, dest);
+    },
     filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
 });
 const upload = multer({ storage });
@@ -41,7 +44,7 @@ router.post('/create', upload.fields([
     try {
         const { clientName, whatsapp, brief, paymentMethod, transactionId, packageName, packagePrice } = req.body;
         const normalizedWhatsapp = String(whatsapp || '').replace(/[\s-]/g, '');
-        const screenshotPath = req.files?.screenshot ? req.files.screenshot[0].path : null;
+        const screenshotPath = req.files?.screenshot ? `uploads/${req.files.screenshot[0].filename}` : null;
 
         if (!clientName || !normalizedWhatsapp || !brief) {
             return res.status(400).json({ success: false, message: 'All fields are required.' });
@@ -55,7 +58,7 @@ router.post('/create', upload.fields([
         const { orderId, queueNumber } = await generateOrderMeta();
 
         // Assets and Screenshot paths
-        const assetPaths = req.files?.assets ? req.files.assets.map(f => f.path) : [];
+        const assetPaths = req.files?.assets ? req.files.assets.map(f => `uploads/${f.filename}`) : [];
 
         // Calculate ETA
         const eta = calculateETA(new Date());
@@ -154,7 +157,7 @@ router.post('/complete/:id', upload.fields([
             return res.status(400).json({ success: false, message: 'Valid WhatsApp number required hai.' });
         }
 
-        const assetPaths = req.files?.assets ? req.files.assets.map(f => f.path) : [];
+        const assetPaths = req.files?.assets ? req.files.assets.map(f => `uploads/${f.filename}`) : [];
 
         order.clientName = String(clientName).trim();
         order.whatsapp = normalizedWhatsapp;
