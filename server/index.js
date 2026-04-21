@@ -33,19 +33,43 @@ app.use((req, res, next) => {
 const orderRoutes = require('./routes/order');
 const authRoutes = require('./routes/auth');
 const teamRoutes = require('./routes/team');
+const packageRoutes = require('./routes/package');
+const Package = require('./models/Package');
 const paymentRoutes = require('./routes/payment');
 const withdrawalRoutes = require('./routes/withdrawal');
 
 app.use('/api/orders', orderRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/team', teamRoutes);
+app.use('/api/packages', packageRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/withdrawal', withdrawalRoutes);
+
+// Auto-seed packages
+async function seedPackages() {
+    try {
+        const count = await Package.countDocuments();
+        if (count === 0) {
+            const defaults = [
+                { name: '1 Video', price: 499, features: ['1 AI Promotional Video', 'Free Script Included', 'Free Editing Included'] },
+                { name: '3 Videos', price: 1299, features: ['3 AI Promotional Videos', 'Free Scripts Included', 'Free Editing Included'] },
+                { name: '5 Videos', price: 1999, features: ['5 AI Promotional Videos', 'Free Scripts Included', 'Free Editing Included'] }
+            ];
+            await Package.insertMany(defaults);
+            console.log('Seeded default packages');
+        }
+    } catch (err) {
+        console.error('Seeding error:', err);
+    }
+}
 
 // MongoDB Connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/ai_video_crm';
 mongoose.connect(MONGODB_URI, { family: 4 })
-    .then(() => console.log('Connected to MongoDB at ' + MONGODB_URI))
+    .then(() => {
+        console.log('Connected to MongoDB at ' + MONGODB_URI);
+        seedPackages();
+    })
     .catch(err => {
         console.error('\x1b[31m%s\x1b[0m', 'CRITICAL ERROR: Could not connect to MongoDB!');
         console.error('\x1b[33m%s\x1b[0m', 'Please ensure MongoDB is running: "net start MongoDB" or "mongod"');

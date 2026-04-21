@@ -1166,11 +1166,7 @@
                             <div class="form-group full">
                                 <label>Package Choice</label>
                                 <select class="form-control" name="package" id="packageChoice" required>
-                                    <option value="" disabled selected>Select a package</option>
-                                    <option value="1 AI Promotional Video" data-price="499" data-features="1 AI Promotional Video,Free Script Included,Free Editing Included">1 Video – ₹499</option>
-                                    <option value="3 AI Promotional Videos" data-price="1299" data-features="3 AI Promotional Videos,Free Scripts Included,Free Editing Included">3 Videos – ₹1299</option>
-                                    <option value="5 AI Promotional Videos" data-price="1999" data-features="5 AI Promotional Videos,Free Scripts Included,Free Editing Included">5 Videos – ₹1999</option>
-
+                                    <option value="" disabled selected>Loading packages...</option>
                                 </select>
                             </div>
 
@@ -1376,16 +1372,42 @@
             }
         }
 
-        function updateFeatures() {
-            const selectedOption = packageChoice.options[packageChoice.selectedIndex];
-            if (selectedOption && selectedOption.dataset.features) {
-                const features = selectedOption.dataset.features.split(',');
-                packageFeatures.innerHTML = features.map((feature) => `<span class="helper-tag">${feature}</span>`).join('');
-                packageFeatures.style.display = 'flex';
-            } else {
-                packageFeatures.style.display = 'none';
+        async function loadPackages() {
+            try {
+                const res = await fetch(`${API_URL}/packages/all`);
+                const data = await res.json();
+                if (!data.success) throw new Error(data.message);
+
+                packageChoice.innerHTML = '<option value="" disabled selected>Select a package</option>' +
+                    data.packages.map(p => `
+                        <option value="${p.name}" data-price="${p.price}" data-features="${p.features.join(',')}">
+                            ${p.name} – ₹${p.price}
+                        </option>
+                    `).join('');
+
+                if (isPaidStep) {
+                    preloadPaidOrder();
+                }
+            } catch (err) {
+                console.error('Package load failed:', err);
+                packageChoice.innerHTML = '<option value="" disabled>Error loading packages</option>';
             }
         }
+
+        function updateFeatures() {
+            const selected = packageChoice.options[packageChoice.selectedIndex];
+            if (!selected || !selected.getAttribute('data-features')) {
+                packageFeatures.style.display = 'none';
+                return;
+            }
+
+            const features = selected.getAttribute('data-features').split(',');
+            packageFeatures.innerHTML = features.map(f => `<span class="helper-tag">${f}</span>`).join('');
+            packageFeatures.style.display = 'flex';
+        }
+
+        loadPackages();
+        packageChoice.addEventListener('change', updateFeatures);
 
         function setDetailsMode(enabled) {
             detailBlocks.forEach((block) => block.classList.toggle('hidden-step', !enabled));

@@ -1367,6 +1367,7 @@
                     <span>Alerts</span>
                     <span id="alertBadge" class="notification-badge">0</span>
                 </a>
+                <a href="#" id="sidePackages" class="side-icon"><i class="fas fa-tags"></i><span>Packages</span></a>
                 <a href="#" id="sideSettings" class="side-icon"><i class="fas fa-cog"></i><span>Settings</span></a>
             </nav>
             <div style="margin-top: auto;">
@@ -1391,6 +1392,32 @@
                     </div>
                 </div>
                 
+                <!-- Package Management View -->
+                <div id="packageManagementView" class="dashboard-view">
+                    <div class="page-intro">
+                        <div>
+                            <span class="eyebrow">Price & Benefit Control</span>
+                            <h1>Packages Management</h1>
+                            <p>Add, edit or remove pricing packages and their included benefits for the client order page.</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="openAddPackageModal()">
+                            <i class="fas fa-plus"></i> Add New Package
+                        </button>
+                    </div>
+
+                    <div id="packageList" class="detail-section" style="padding: 0; overflow: hidden;">
+                        <div class="list-header" style="grid-template-columns: 2fr 1fr 2fr 1fr;">
+                            <span>Package Name</span>
+                            <span>Price (Rs)</span>
+                            <span>Benefits</span>
+                            <span style="text-align: right;">Actions</span>
+                        </div>
+                        <div id="packageItems">
+                            <!-- Dynamic packages -->
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Dashboard Statistics View -->
                 <div id="dashboardOverview" class="dashboard-view">
                     <div class="page-intro">
@@ -1919,6 +1946,84 @@
         </div>
     </div>
 
+    <!-- Add Package Modal -->
+    <div id="addPackageModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-head">
+                <div>
+                    <h3>Create New Package</h3>
+                    <p>Set a name, price and add benefits for this package.</p>
+                </div>
+                <button class="modal-close" onclick="closeAddPackageModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="addPackageForm" class="modal-form">
+                <div>
+                    <label>Package Name</label>
+                    <input type="text" id="pkgName" placeholder="e.g. 10 Videos Growth Pack" required>
+                </div>
+                <div>
+                    <label>Price (INR)</label>
+                    <input type="number" id="pkgPrice" placeholder="e.g. 2999" required>
+                </div>
+                <div>
+                    <label>Benefits (Features)</label>
+                    <div id="pkgFeaturesContainer" style="display: grid; gap: 8px; margin-bottom: 8px;">
+                        <div class="feature-input-row" style="display: flex; gap: 8px;">
+                            <input type="text" class="benefit-input" placeholder="e.g. Free Script Writing">
+                            <button type="button" class="side-icon" style="background: #fee2e2; color: #ef4444; width: 38px;" onclick="this.parentElement.remove()">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-outline" style="width: 100%; font-size: 0.8rem; padding: 8px;" onclick="addBenefitInput('pkgFeaturesContainer')">
+                        <i class="fas fa-plus"></i> Add Another Benefit
+                    </button>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-outline" onclick="closeAddPackageModal()">Cancel</button>
+                    <button type="submit" id="savePkgBtn" class="btn btn-primary">Create Package</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Package Modal -->
+    <div id="editPackageModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-head">
+                <div>
+                    <h3>Edit Package</h3>
+                    <p>Update pricing or benefits for this package.</p>
+                </div>
+                <button class="modal-close" onclick="closeEditPackageModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="editPackageForm" class="modal-form">
+                <input type="hidden" id="editPkgId">
+                <div>
+                    <label>Package Name</label>
+                    <input type="text" id="editPkgName" required>
+                </div>
+                <div>
+                    <label>Price (INR)</label>
+                    <input type="number" id="editPkgPrice" required>
+                </div>
+                <div>
+                    <label>Benefits (Features)</label>
+                    <div id="editPkgFeaturesContainer" style="display: grid; gap: 8px; margin-bottom: 8px;">
+                        <!-- Dynamic inputs -->
+                    </div>
+                    <button type="button" class="btn btn-outline" style="width: 100%; font-size: 0.8rem; padding: 8px;" onclick="addBenefitInput('editPkgFeaturesContainer')">
+                        <i class="fas fa-plus"></i> Add Another Benefit
+                    </button>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-outline" onclick="closeEditPackageModal()">Cancel</button>
+                    <button type="submit" id="updatePkgBtn" class="btn btn-primary">Update Package</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div id="addEditorModal" class="modal-overlay">
         <div class="modal-card">
             <div class="modal-head">
@@ -2074,6 +2179,7 @@
                 editorDetailView, 
                 credentialsOverview, 
                 withdrawalManagement,
+                document.getElementById('packageManagementView'),
                 document.getElementById('alertsManagement'),
                 pipelineControls, 
                 contentHeader
@@ -2134,15 +2240,214 @@
             closeSidebar();
         };
 
+        const sidePackages = document.getElementById('sidePackages');
+        if (sidePackages) {
+            sidePackages.onclick = (e) => {
+                e.preventDefault();
+                hideAllViews();
+                document.getElementById('packageManagementView').style.display = 'block';
+                sidePackages.classList.add('active');
+                closeSidebar();
+                fetchPackagesAdmin();
+            };
+        }
+
         const sideAlerts = document.getElementById('sideAlerts');
-        sideAlerts.onclick = (e) => {
+        if (sideAlerts) {
+            sideAlerts.onclick = (e) => {
+                e.preventDefault();
+                hideAllViews();
+                document.getElementById('alertsManagement').style.display = 'block';
+                sideAlerts.classList.add('active');
+                closeSidebar();
+                fetchAlerts();
+            };
+        }
+
+        async function fetchPackagesAdmin() {
+            const container = document.getElementById('packageItems');
+            container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-muted);"><i class="fas fa-spinner fa-spin"></i> Loading packages...</div>';
+
+            try {
+                const res = await fetch(`${API_BASE}/packages/all`);
+                const data = await res.json();
+                if (!data.success) throw new Error(data.message);
+
+                if (data.packages.length === 0) {
+                    container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-muted);">No packages found. Add one to get started.</div>';
+                    return;
+                }
+
+                container.innerHTML = data.packages.map(p => `
+                    <div class="pipeline-card" style="grid-template-columns: 2fr 1fr 2fr 1fr; padding: 15px 20px; border-radius: 12px; margin-bottom: 10px;">
+                        <div class="val">${p.name}</div>
+                        <div class="val">Rs ${p.price}</div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 5px;">
+                            ${p.features.map(f => `<span class="helper-tag" style="font-size: 0.7rem; padding: 2px 8px; background: #f1f5f9;">${f}</span>`).join('')}
+                        </div>
+                        <div class="row-actions">
+                            <button class="btn-review" onclick="openEditPackageModal('${p._id}', '${p.name}', ${p.price}, '${p.features.join('|')}')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-claim" style="background: #fee2e2; color: #ef4444;" onclick="deletePackage('${p._id}', '${p.name}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                container.innerHTML = `<div style="text-align: center; padding: 40px; color: #ef4444;">Error: ${err.message}</div>`;
+            }
+        }
+
+        window.fetchPackagesAdmin = fetchPackagesAdmin;
+
+        function addBenefitInput(containerId, value = '') {
+            const container = document.getElementById(containerId);
+            const div = document.createElement('div');
+            div.className = 'feature-input-row';
+            div.style.cssText = 'display: flex; gap: 8px; margin-bottom: 8px;';
+            div.innerHTML = `
+                <input type="text" class="benefit-input" style="width: 100%;" placeholder="e.g. Free Script Writing" value="${value}">
+                <button type="button" class="side-icon" style="background: #fee2e2; color: #ef4444; width: 38px; flex-shrink: 0;" onclick="this.parentElement.remove()">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+            container.appendChild(div);
+        }
+
+        window.addBenefitInput = addBenefitInput;
+
+        function openAddPackageModal() {
+            document.getElementById('addPackageForm').reset();
+            document.getElementById('pkgFeaturesContainer').innerHTML = '';
+            addBenefitInput('pkgFeaturesContainer');
+            document.getElementById('addPackageModal').classList.add('active');
+        }
+
+        function closeAddPackageModal() {
+            document.getElementById('addPackageModal').classList.remove('active');
+        }
+
+        window.openAddPackageModal = openAddPackageModal;
+        window.closeAddPackageModal = closeAddPackageModal;
+
+        function openEditPackageModal(id, name, price, featuresRaw) {
+            document.getElementById('editPkgId').value = id;
+            document.getElementById('editPkgName').value = name;
+            document.getElementById('editPkgPrice').value = price;
+            
+            const container = document.getElementById('editPkgFeaturesContainer');
+            container.innerHTML = '';
+            if (featuresRaw) {
+                featuresRaw.split('|').forEach(f => addBenefitInput('editPkgFeaturesContainer', f));
+            } else {
+                addBenefitInput('editPkgFeaturesContainer');
+            }
+            
+            document.getElementById('editPackageModal').classList.add('active');
+        }
+
+        function closeEditPackageModal() {
+            document.getElementById('editPackageModal').classList.remove('active');
+        }
+
+        window.openEditPackageModal = openEditPackageModal;
+        window.closeEditPackageModal = closeEditPackageModal;
+
+        // Form Submissions
+        document.getElementById('addPackageForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            hideAllViews();
-            document.getElementById('alertsManagement').style.display = 'block';
-            sideAlerts.classList.add('active');
-            closeSidebar();
-            fetchAlerts();
-        };
+            const btn = document.getElementById('savePkgBtn');
+            const name = document.getElementById('pkgName').value;
+            const price = Number(document.getElementById('pkgPrice').value);
+            const features = Array.from(document.querySelectorAll('#pkgFeaturesContainer .benefit-input'))
+                                 .map(i => i.value.trim())
+                                 .filter(v => v !== '');
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+            try {
+                const res = await fetch(`${API_BASE}/packages/add`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({ name, price, features })
+                });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.message);
+
+                alert('Package added successfully!');
+                closeAddPackageModal();
+                fetchPackagesAdmin();
+            } catch (err) {
+                alert('Error: ' + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Create Package';
+            }
+        });
+
+        document.getElementById('editPackageForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('updatePkgBtn');
+            const id = document.getElementById('editPkgId').value;
+            const name = document.getElementById('editPkgName').value;
+            const price = Number(document.getElementById('editPkgPrice').value);
+            const features = Array.from(document.querySelectorAll('#editPkgFeaturesContainer .benefit-input'))
+                                 .map(i => i.value.trim())
+                                 .filter(v => v !== '');
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+
+            try {
+                const res = await fetch(`${API_BASE}/packages/update/${id}`, {
+                    method: 'PUT',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({ name, price, features })
+                });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.message);
+
+                alert('Package updated successfully!');
+                closeEditPackageModal();
+                fetchPackagesAdmin();
+            } catch (err) {
+                alert('Error: ' + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Update Package';
+            }
+        });
+
+        async function deletePackage(id, name) {
+            if (!confirm(`Are you sure you want to delete "${name}"?`)) return;
+
+            try {
+                const res = await fetch(`${API_BASE}/packages/delete/${id}`, {
+                    method: 'DELETE',
+                    headers: { 
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                const data = await res.json();
+                if (!data.success) throw new Error(data.message);
+
+                alert('Package deleted successfully!');
+                fetchPackagesAdmin();
+            } catch (err) {
+                alert('Error: ' + err.message);
+            }
+        }
+
+        window.deletePackage = deletePackage;
 
         let currentOrderId = null;
         let currentOrder = null;
