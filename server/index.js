@@ -1,9 +1,13 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const dns = require('dns');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 require('dotenv').config();
+
+// Force Google DNS for database resolution (Fixes ENOTFOUND issues)
+dns.setServers(['8.8.8.8', '8.8.4.4']);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
