@@ -128,8 +128,11 @@ router.post('/create-payment-order', async (req, res) => {
             packagePrice: order.packagePrice
         });
     } catch (error) {
-        console.error('Create payment order error:', error);
-        res.status(500).json({ success: false, message: 'Internal server error' });
+        console.error('--- DETAILED ORDER ERROR ---');
+        console.error('Message:', error.message);
+        console.error('Stack:', error.stack);
+        console.error('Request Body:', req.body);
+        res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
     }
 });
 
