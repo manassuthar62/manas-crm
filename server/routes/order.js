@@ -200,7 +200,12 @@ router.get('/track/:id', async (req, res) => {
 // GET: All orders (Admin)
 router.get('/all', async (req, res) => {
     try {
-        const orders = await Order.find()
+        const orders = await Order.find({ 
+            $or: [
+                { detailsSubmitted: true }, 
+                { paymentStatus: 'verified' }
+            ] 
+        })
             .populate('editor', 'name')
             .sort({ createdAt: -1 });
         res.json({ success: true, orders });
@@ -284,7 +289,12 @@ router.delete('/delete/:id', async (req, res) => {
 // GET: Business Stats (Admin)
 router.get('/stats', async (req, res) => {
     try {
-        const orders = await Order.find();
+        const orders = await Order.find({
+            $or: [
+                { detailsSubmitted: true },
+                { paymentStatus: 'verified' }
+            ]
+        });
         const approvedOrders = orders.filter(o => o.paymentStatus === 'verified' && (o.paymentAmount || 0) > 0);
         const totalRevenue = approvedOrders.reduce((sum, o) => sum + (o.paymentAmount || 0), 0);
         const totalPayouts = orders.reduce((sum, o) => sum + (o.editorPayout || 0), 0);

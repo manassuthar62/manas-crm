@@ -3340,7 +3340,7 @@
                                 type: 'order',
                                 id: o._id,
                                 title: `New Order: ${o.clientName}`,
-                                subtitle: `${o.orderId} • ${formatCurrency(o.amount)}`,
+                                subtitle: `${o.orderId} • ${formatCurrency(o.packagePrice)}`,
                                 time: new Date(o.createdAt)
                             });
                         }
