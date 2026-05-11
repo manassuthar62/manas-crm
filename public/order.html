@@ -1345,8 +1345,8 @@
         const paymentSuccessModal = document.getElementById('paymentSuccessModal');
         const paidOrderIdText = document.getElementById('paidOrderIdText');
         const urlParams = new URLSearchParams(window.location.search);
-        const paidOrderId = urlParams.get('id');
-        const isPaidStep = urlParams.get('paid') === '1' && paidOrderId;
+        let paidOrderId = urlParams.get('id');
+        let isPaidStep = urlParams.get('paid') === '1' && Boolean(paidOrderId);
         const paymentState = urlParams.get('payment');
 
         function closePaymentSuccessModal() {
@@ -1385,7 +1385,7 @@
                         </option>
                     `).join('');
 
-                if (isPaidStep) {
+                if (paidOrderId) {
                     preloadPaidOrder();
                 }
             } catch (err) {
@@ -1437,6 +1437,22 @@
             }
         }
 
+        function unlockDetailsForm(orderId, showModal = false) {
+            paidOrderId = orderId;
+            isPaidStep = true;
+            setDetailsMode(true);
+
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set('id', paidOrderId);
+            currentUrl.searchParams.set('paid', '1');
+            window.history.replaceState({}, '', currentUrl.toString());
+
+            paidOrderIdText.innerText = paidOrderId;
+            if (showModal) {
+                paymentSuccessModal.classList.add('active');
+            }
+        }
+
         function submitPayuForm(hashData) {
             const payuForm = document.createElement('form');
             payuForm.method = 'POST';
@@ -1470,7 +1486,7 @@
         }
 
         async function preloadPaidOrder() {
-            if (!isPaidStep) {
+            if (!paidOrderId) {
                 return;
             }
 
@@ -1481,13 +1497,29 @@
                     throw new Error(data.message || 'Order not found');
                 }
 
-                const packageName = data.order.packageName;
+                const order = data.order;
+                const packageName = order.packageName;
                 if (packageName) {
                     const matchingOption = Array.from(packageChoice.options).find((option) => option.value === packageName);
                     if (matchingOption) {
                         packageChoice.value = matchingOption.value;
                         updateFeatures();
                     }
+                }
+
+                if (order.paymentStatus === 'verified' && !order.detailsSubmitted) {
+                    unlockDetailsForm(order.orderId || paidOrderId, urlParams.get('paid') === '1');
+                    return;
+                }
+
+                if (order.paymentStatus === 'verified' && order.detailsSubmitted) {
+                    window.location.href = `track.html?id=${encodeURIComponent(order.orderId || paidOrderId)}`;
+                    return;
+                }
+
+                if (urlParams.get('paid') === '1') {
+                    setDetailsMode(false);
+                    showBanner('error', 'Payment verify nahi hui. Agar amount cut gaya hai to support se Order ID share karo.');
                 }
             } catch (error) {
                 showBanner('error', error.message || 'Paid order load nahi ho paya.');
@@ -1497,7 +1529,6 @@
         packageChoice.addEventListener('change', updateFeatures);
 
         setDetailsMode(Boolean(isPaidStep));
-        preloadPaidOrder();
 
         if (isPaidStep) {
             paidOrderIdText.innerText = paidOrderId;

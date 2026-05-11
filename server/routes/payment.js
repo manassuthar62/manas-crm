@@ -21,6 +21,29 @@ function logPayuPayload(label, payload) {
     console.log(`${label}:`, safePayload);
 }
 
+function getRequestBaseUrl(req) {
+    const forwardedProto = String(req.get('x-forwarded-proto') || '').split(',')[0].trim();
+    const host = req.get('host');
+    const isLocalHost = /^(localhost|127\.0\.0\.1)(:\d+)?$/i.test(host || '');
+    const protocol = forwardedProto || (isLocalHost ? (req.protocol || 'http') : 'https');
+    return `${protocol}://${host}`;
+}
+
+function getFrontendBaseUrl(req) {
+    return String(process.env.FRONTEND_URL || '').trim().replace(/\/+$/, '') || getRequestBaseUrl(req);
+}
+
+function buildFrontendUrl(req, pathname, params = {}) {
+    const url = new URL(pathname, `${getFrontendBaseUrl(req)}/`);
+    Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== '') {
+            url.searchParams.set(key, String(value));
+        }
+    });
+
+    return url.toString();
+}
+
 function buildReverseHashString(body, key, salt) {
     const {
         status = '',
@@ -113,8 +136,8 @@ router.post('/create-hash', async (req, res) => {
             email,
             phone,
             udf1: orderId, // Crucial for redirection
-            surl: `${req.protocol === 'https' || !req.get('host').includes('localhost') ? 'https' : 'http'}://${req.get('host')}/api/payment/success`,
-            furl: `${req.protocol === 'https' || !req.get('host').includes('localhost') ? 'https' : 'http'}://${req.get('host')}/api/payment/failure`
+            surl: `${getRequestBaseUrl(req)}/api/payment/success`,
+            furl: `${getRequestBaseUrl(req)}/api/payment/failure`
         });
     } catch (error) {
         console.error('CRITICAL HASH ERROR:', error.stack);
@@ -176,19 +199,25 @@ async function handleSuccessCallback(req, res) {
 
             if (!updatedOrder) {
                 console.error('Order not found while updating success callback for:', udf1 || txnid);
-                return res.redirect(`${process.env.FRONTEND_URL || ''}/track.html?status=error`);
+                return res.redirect(buildFrontendUrl(req, '/track.html', { status: 'error' }));
             }
 
             console.log('Database updated successfully for Order:', updatedOrder.orderId);
-            res.redirect(`${process.env.FRONTEND_URL || ''}/order.html?id=${updatedOrder.orderId}&paid=1&txnid=${encodeURIComponent(txnid)}`);
+            res.redirect(buildFrontendUrl(req, '/order.html', {
+                id: updatedOrder.orderId,
+                paid: '1',
+                txnid
+            }));
         } else {
             console.error('Payment Verification Failed or Status not success');
-            const failureOrderId = udf1 ? `id=${encodeURIComponent(udf1)}&` : '';
-            res.redirect(`${process.env.FRONTEND_URL || ''}/order.html?${failureOrderId}payment=failed`);
+            res.redirect(buildFrontendUrl(req, '/order.html', {
+                id: udf1,
+                payment: 'failed'
+            }));
         }
     } catch (error) {
         console.error('Payment success handling error:', error);
-        res.redirect('/order.html?payment=error');
+        res.redirect(buildFrontendUrl(req, '/order.html', { payment: 'error' }));
     }
 }
 
@@ -228,8 +257,10 @@ async function handleFailureCallback(req, res) {
         }
     }
 
-    const failureOrderId = orderId ? `id=${encodeURIComponent(orderId)}&` : '';
-    res.redirect(`/order.html?${failureOrderId}payment=failed`);
+    res.redirect(buildFrontendUrl(req, '/order.html', {
+        id: orderId,
+        payment: 'failed'
+    }));
 }
 
 // PayU failure callback

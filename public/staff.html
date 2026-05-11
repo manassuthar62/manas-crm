@@ -891,7 +891,9 @@
 
     <script>
         const API_BASE = '/api';
-        const user = JSON.parse(localStorage.getItem('user'));
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user') || 'null');
+        const canUseStaffPortal = user && ['editor', 'staff'].includes(user.role);
         const menuToggle = document.getElementById('menuToggle');
         const sidebarBackdrop = document.getElementById('sidebarBackdrop');
         const STATUS_OPTIONS = [
@@ -934,7 +936,7 @@
             }
         });
 
-        if (!user || user.role !== 'editor') {
+        if (!token || !canUseStaffPortal) {
             window.location.href = 'admin.html';
         } else {
             document.getElementById('welcomeText').innerText = `Welcome, ${user.name}!`;
@@ -977,7 +979,9 @@
             `;
 
             try {
-                const res = await fetch(`${API_BASE}/orders/all`);
+                const res = await fetch(`${API_BASE}/orders/all`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
                 const data = await res.json();
 
                 if (!data.success) {
@@ -1142,7 +1146,10 @@
             try {
                 const res = await fetch(`${API_BASE}/orders/update/${activeJob.orderId}`, {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
                     body: JSON.stringify({ status: nextStatus })
                 });
                 const result = await res.json();
@@ -1217,7 +1224,7 @@
             try {
                 // Fetch Balance
                 const balRes = await fetch(`${API_BASE}/withdrawal/balance`, {
-                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const balData = await balRes.json();
                 if (balData.success) {
@@ -1229,7 +1236,7 @@
 
                 // Fetch History
                 const histRes = await fetch(`${API_BASE}/withdrawal/my`, {
-                    headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const histData = await histRes.json();
                 if (histData.success) {
@@ -1293,7 +1300,7 @@
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        'Authorization': `Bearer ${token}`
                     },
                     body: JSON.stringify({ amount, paymentDetails })
                 });
