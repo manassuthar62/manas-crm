@@ -128,11 +128,20 @@ router.post('/create-payment-order', async (req, res) => {
             packagePrice: order.packagePrice
         });
     } catch (error) {
-        console.error('--- DETAILED ORDER ERROR ---');
+        console.error('--- CREATE PAYMENT ORDER ERROR ---');
         console.error('Message:', error.message);
         console.error('Stack:', error.stack);
-        console.error('Request Body:', req.body);
-        res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
+        
+        let clientMessage = 'Internal server error';
+        if (error.name === 'MongoNetworkError' || error.code === 'ENOTFOUND') {
+            clientMessage = 'Database se connection nahi ho paa raha. Please try again in a moment.';
+        }
+
+        res.status(500).json({ 
+            success: false, 
+            message: clientMessage, 
+            error: error.message 
+        });
     }
 });
 

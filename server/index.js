@@ -6,8 +6,13 @@ const path = require('path');
 const fs = require('fs');
 require('dotenv').config();
 
-// Force Google DNS for database resolution (Fixes ENOTFOUND issues)
-dns.setServers(['8.8.8.8', '8.8.4.4']);
+// Force reliable DNS for database resolution (Fixes ENOTFOUND issues on some networks)
+try {
+    dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1', '1.0.0.1']);
+    console.log('DNS servers set to Google and Cloudflare');
+} catch (e) {
+    console.warn('Could not set custom DNS servers, using system defaults');
+}
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -69,7 +74,11 @@ async function seedPackages() {
 
 // MongoDB Connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/ai_video_crm';
-mongoose.connect(MONGODB_URI, { family: 4 })
+mongoose.connect(MONGODB_URI, { 
+    family: 4,
+    serverSelectionTimeoutMS: 10000, // 10 seconds timeout
+    heartbeatFrequencyMS: 10000     // Check connection every 10 seconds
+})
     .then(() => {
         console.log('Connected to MongoDB at ' + MONGODB_URI);
         seedPackages();
