@@ -16,12 +16,49 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-async function generateOrderMeta() {
-    const count = await Order.countDocuments();
+async function generateOrderMeta(offset = 0) {
+    const [latestOrder] = await Order.aggregate([
+        { $match: { orderId: { $regex: /^AV-\d+$/ } } },
+        {
+            $project: {
+                queueNumber: 1,
+                orderNumber: { $toInt: { $substr: ['$orderId', 3, -1] } }
+            }
+        },
+        { $sort: { orderNumber: -1 } },
+        { $limit: 1 }
+    ]);
+    const nextOrderNumber = Math.max(1000, latestOrder?.orderNumber || 1000) + 1 + offset;
+
     return {
-        orderId: `AV-${1000 + count + 1}`,
-        queueNumber: count + 1
+        orderId: `AV-${nextOrderNumber}`,
+        queueNumber: nextOrderNumber - 1000
     };
+}
+
+async function saveOrderWithFreshMeta(buildOrderFields) {
+    const maxAttempts = 5;
+
+    for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+        const meta = await generateOrderMeta(attempt);
+        const order = new Order({
+            ...meta,
+            ...buildOrderFields(meta)
+        });
+
+        try {
+            await order.save();
+            return order;
+        } catch (error) {
+            if (error?.code === 11000 && error?.keyPattern?.orderId && attempt < maxAttempts - 1) {
+                continue;
+            }
+
+            throw error;
+        }
+    }
+
+    throw new Error('Could not generate a unique order ID');
 }
 
 async function removeUploadedFile(filePath) {
@@ -54,18 +91,13 @@ router.post('/create', upload.fields([
             return res.status(400).json({ success: false, message: 'Valid WhatsApp number required hai.' });
         }
         
-        // Generate Order ID
-        const { orderId, queueNumber } = await generateOrderMeta();
-
         // Assets and Screenshot paths
         const assetPaths = req.files?.assets ? req.files.assets.map(f => `uploads/${f.filename}`) : [];
 
         // Calculate ETA
         const eta = calculateETA(new Date());
 
-        const newOrder = new Order({
-            orderId,
-            queueNumber,
+        const newOrder = await saveOrderWithFreshMeta(() => ({
             clientName,
             whatsapp: normalizedWhatsapp,
             brief,
@@ -78,15 +110,13 @@ router.post('/create', upload.fields([
             paymentScreenshot: screenshotPath,
             eta,
             statusUpdatedAt: new Date()
-        });
-
-        await newOrder.save();
+        }));
 
         res.status(201).json({ 
             success: true, 
             message: 'Order placed successfully', 
-            orderId, 
-            queueNumber,
+            orderId: newOrder.orderId,
+            queueNumber: newOrder.queueNumber,
             eta 
         });
     } catch (error) {
@@ -103,26 +133,21 @@ router.post('/create-payment-order', async (req, res) => {
             return res.status(400).json({ success: false, message: 'Package select karna zaruri hai.' });
         }
 
-        const { orderId, queueNumber } = await generateOrderMeta();
         const eta = calculateETA(new Date());
 
-        const order = new Order({
-            orderId,
-            queueNumber,
+        const order = await saveOrderWithFreshMeta(() => ({
             packageName: String(packageName).trim(),
             packagePrice: Number(packagePrice) || 0,
             paymentMethod: paymentMethod || 'online',
             eta,
             detailsSubmitted: false,
             statusUpdatedAt: new Date()
-        });
-
-        await order.save();
+        }));
 
         res.status(201).json({
             success: true,
-            orderId,
-            queueNumber,
+            orderId: order.orderId,
+            queueNumber: order.queueNumber,
             eta,
             packageName: order.packageName,
             packagePrice: order.packagePrice
